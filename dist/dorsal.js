@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-/*! dorsal - v0.0.1 - 2014-06-09 */
+/*! dorsal - v0.0.1 - 2014-06-10 */
 
 var DorsalRuntime = function() {};
 
