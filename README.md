@@ -10,6 +10,6 @@ necessary for configuration.
 Examples
 --------
 
-    * See examples/lorem.html for a use case that automatically inserts
-      Lorem ipsum wherever a `.js-d-lorem` class is used.
+* See examples/lorem.html for a use case that automatically inserts
+  Lorem ipsum wherever a `.js-d-lorem` class is used.
 
