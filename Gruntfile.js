@@ -48,7 +48,13 @@ module.exports = function(grunt) {
             dorsal: {
                 src: 'src/**/*.js',
                 options: {
-                    specs: 'tests/*.js'
+                    specs: 'tests/*.js',
+                    vendor: [
+                        'node_modules/jquery/dist/jquery.js'
+                    ],
+                    helpers: [
+                        'node_modules/jasmine-jquery/lib/jasmine-jquery.js'
+                    ]
                 }
             }
         }
