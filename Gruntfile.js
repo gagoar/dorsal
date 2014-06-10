@@ -42,6 +42,15 @@ module.exports = function(grunt) {
                 'Gruntfile.js'
             ],
             tasks: ['default']
+        },
+
+        jasmine: {
+            dorsal: {
+                src: 'src/**/*.js',
+                options: {
+                    specs: 'tests/*.js'
+                }
+            }
         }
     });
 
@@ -50,6 +59,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
 
     grunt.registerTask('default', [
         'clean',

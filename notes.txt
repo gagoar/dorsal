@@ -1,0 +1,22 @@
+Sample Plugin Registration
+
+// <select class="js-d-select">
+//     <option/>
+// </select>
+
+define(function(require) {
+    var Dorsal = require('dorsal'),
+        $ = require('jquery'),
+        SelectView = require('ui_components/select_view');
+
+    Dorsal.registerPlugin('select', function(options) {
+        // options:
+        //  {
+        //     el
+        //  }
+
+        new SelectView({
+            element: $(options.el)
+        });
+    });
+});

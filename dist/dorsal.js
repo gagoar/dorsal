@@ -1,3 +1,17 @@
+(function(root, factory) {
+    if(typeof exports === 'object') {
+        module.exports = factory();
+    }
+    else if(typeof define === 'function' && define.amd) {
+        define([], factory);
+    }
+    else {
+        root['Dorsal'] = factory();
+    }
+}(this, function() {
+
+/*! dorsal - v0.0.1 - 2014-06-09 */
+
 var DorsalRuntime = function() {};
 
 DorsalRuntime.prototype.VERSION = '0.0.1';
@@ -38,3 +52,8 @@ var Dorsal = new DorsalRuntime();
 Dorsal.create = function() { 
     return new DorsalRuntime();
 };
+
+
+return Dorsal;
+
+}));
