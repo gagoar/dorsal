@@ -20,21 +20,21 @@ DorsalRuntime.prototype.bootstrap = function() {
     }
 
     var pluginKeys = Object.keys(this.plugins),
-        i = 0,
-        j = 0,
+        index = 0,
+        elementIndex = 0,
         length = pluginKeys.length,
         elements;
 
-    for (; i < length; i++) {
-        elements = document.querySelectorAll(this.CSS_PREFIX + pluginKeys[i]);
-        for (j = 0; j < elements.length; j++) {
-            this.plugins[pluginKeys[i]]({ el: elements[j] });
+    for (; index < length; index++) {
+        elements = document.querySelectorAll(this.CSS_PREFIX + pluginKeys[index]);
+        for (elementIndex = 0; elementIndex < elements.length; elementIndex++) {
+            this.plugins[pluginKeys[index]]({ el: elements[elementIndex] });
         }
     }
 };
 
 var Dorsal = new DorsalRuntime();
 
-Dorsal.create = function() { 
+Dorsal.create = function() {
     return new DorsalRuntime();
 };
