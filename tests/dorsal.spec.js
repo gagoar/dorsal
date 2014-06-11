@@ -41,4 +41,35 @@ describe("DorsalJS", function() {
             expect($('.js-d-test')).toHaveHtml('hello, world');
         });
     });
+
+    describe('data attributes', function() {
+
+        beforeEach(function() {
+            this.dorsal.registerPlugin('test', function(options) {
+                options.el.innerHTML = options.data.testOneYay + ', ' + options.data.testTwoYay;
+            });
+
+            this.html = '<div class="js-d-test" data-d-test-one-yay="hello" data-d-test-two-yay="world"></div>';
+            setFixtures(this.html);
+            this.dorsal.bootstrap();
+        });
+
+        it('gets data attributes without dataset', function() {
+            expect($('.js-d-test')).toHaveHtml('hello, world');
+        });
+
+        it('gets attributes in older browsers', function() {
+            var attributes = this.dorsal._getDataAttributes($(this.html).get(0));
+            expect(attributes.testOneYay).toBe('hello');
+            expect(attributes.testTwoYay).toBe('world');
+        });
+
+        // note this test will actually fail in older browsers
+        it('gets attributes in newer browsers', function() {
+            var attributes = this.dorsal._getDatasetAttributes($(this.html).get(0));
+            expect(attributes.testOneYay).toBe('hello');
+            expect(attributes.testTwoYay).toBe('world');
+        });
+
+    });
 });
