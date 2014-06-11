@@ -48,6 +48,7 @@ module.exports = function(grunt) {
             dorsal: {
                 src: 'src/**/*.js',
                 options: {
+                    keepRunner: true,
                     display: 'short',
                     summary: true,
                     specs: 'tests/*.js',
