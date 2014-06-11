@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-/*! dorsal - v0.0.1 - 2014-06-10 */
+/*! dorsal - v0.2.0 - 2014-06-11 */
 
 var DorsalRuntime = function() {};
 
@@ -88,7 +88,7 @@ DorsalRuntime.prototype.bootstrap = function() {
         elements = document.querySelectorAll(this.CSS_PREFIX + pluginKeys[index]);
         for (elementIndex = 0; elementIndex < elements.length; elementIndex++) {
             data = this._getAttributes(elements[elementIndex]);
-            this.plugins[pluginKeys[index]]({
+            this.plugins[pluginKeys[index]].call(elements[elementIndex], {
                 el: elements[elementIndex],
                 data: data
             });
