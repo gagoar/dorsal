@@ -74,7 +74,7 @@ DorsalRuntime.prototype.bootstrap = function() {
         elements = document.querySelectorAll(this.CSS_PREFIX + pluginKeys[index]);
         for (elementIndex = 0; elementIndex < elements.length; elementIndex++) {
             data = this._getAttributes(elements[elementIndex]);
-            this.plugins[pluginKeys[index]]({
+            this.plugins[pluginKeys[index]].call(elements[elementIndex], {
                 el: elements[elementIndex],
                 data: data
             });
