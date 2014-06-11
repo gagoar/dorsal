@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-/*! dorsal - v0.2.0 - 2014-06-11 */
+/*! dorsal - v0.3.0 - 2014-06-11 */
 
 var DorsalRuntime = function() {};
 
@@ -72,7 +72,15 @@ DorsalRuntime.prototype._getAttributes = function(el) {
     return this._getDataAttributes(el);
 }
 
-DorsalRuntime.prototype.bootstrap = function() {
+DorsalRuntime.prototype._runPlugin = function(plugin, el) {
+    var data = this._getAttributes(el);
+    plugin.call(el, {
+        el: el,
+        data: data
+    });
+}
+
+DorsalRuntime.prototype.wire = function(el) {
     if (!this.plugins) {
         throw new Error('No plugins registered with Dorsal');
     }
@@ -82,16 +90,20 @@ DorsalRuntime.prototype.bootstrap = function() {
         elementIndex = 0,
         length = pluginKeys.length,
         elements,
-        data;
+        data,
+        el = el || document,
+        pluginCSSClass;
 
     for (; index < length; index++) {
-        elements = document.querySelectorAll(this.CSS_PREFIX + pluginKeys[index]);
+        pluginCSSClass = this.CSS_PREFIX + pluginKeys[index];
+        elements = el.querySelectorAll(pluginCSSClass);
+
+        if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
+            this._runPlugin(this.plugins[pluginKeys[index]], el);
+        }
+
         for (elementIndex = 0; elementIndex < elements.length; elementIndex++) {
-            data = this._getAttributes(elements[elementIndex]);
-            this.plugins[pluginKeys[index]].call(elements[elementIndex], {
-                el: elements[elementIndex],
-                data: data
-            });
+            this._runPlugin(this.plugins[pluginKeys[index]], elements[elementIndex]);
         }
     }
 };
