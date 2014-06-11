@@ -33,13 +33,29 @@ describe("DorsalJS", function() {
                 options.el.innerHTML = 'hello, world';
             });
 
-            setFixtures('<div class="js-d-test"></div>');
-            this.dorsal.bootstrap();
+            this.html = '<div class="js-d-test"></div>';
+
+            setFixtures(this.html);
+            this.dorsal.wire();
         });
 
         it('runs the test plugin', function() {
             expect($('.js-d-test')).toHaveHtml('hello, world');
         });
+
+        describe('after initial wire', function() {
+
+            beforeEach(function() {
+                this.$el = $(this.html);
+                this.dorsal.wire(this.$el.get(0));
+            });
+
+            it('runs the test plugin on a DOM node', function() {
+                expect(this.$el).toHaveHtml('hello, world');
+            });
+
+        });
+
     });
 
     describe('data attributes', function() {
@@ -51,7 +67,7 @@ describe("DorsalJS", function() {
 
             this.html = '<div class="js-d-test" data-d-test-one-yay="hello" data-d-test-two-yay="world"></div>';
             setFixtures(this.html);
-            this.dorsal.bootstrap();
+            this.dorsal.wire();
         });
 
         it('gets data attributes without dataset', function() {
