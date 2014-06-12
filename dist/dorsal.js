@@ -30,7 +30,7 @@
 
 var DorsalRuntime = function() {};
 
-DorsalRuntime.prototype.VERSION = '0.0.1';
+DorsalRuntime.prototype.VERSION = '0.3.1';
 DorsalRuntime.prototype.CSS_PREFIX = '.js-d-';
 DorsalRuntime.prototype.DATA_PREFIX = 'd';
 
