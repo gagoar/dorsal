@@ -2,6 +2,7 @@
   "name": "dorsal",
   "version": "0.3.2",
   "description": "HTML UI bootstrap and automation using CSS directives",
+  "homepage": "http://github.com/eventbrite/dorsal",
   "repository": {
       "type": "git",
       "url": "http://github.com/eventbrite/dorsal.git"
@@ -34,7 +35,10 @@
       "email": "kevinstone@eventbrite.com"
     }
   ],
-  "license": "Apache 2.0",
+  "licenses": [{
+    "type": "Apache 2.0",
+    "url": "LICENSE.md"
+  }],
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-banner": "^0.2.3",
