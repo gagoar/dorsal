@@ -1,6 +1,6 @@
 describe("DorsalJS", function() {
     beforeEach(function() {
-        this.dorsal = new DorsalRuntime();
+        this.dorsal = new DorsalCore();
     });
 
     it('initializes without any plugin state', function() {

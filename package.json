@@ -1,6 +1,6 @@
 {
   "name": "dorsal",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "HTML UI bootstrap and automation using CSS directives",
   "repository": {
       "type": "git",

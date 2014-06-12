@@ -13,24 +13,24 @@
  * limitations under the License.
  */
 
-var DorsalRuntime = function() {};
+var DorsalCore = function() {};
 
-DorsalRuntime.prototype.VERSION = '0.3.1';
-DorsalRuntime.prototype.CSS_PREFIX = '.js-d-';
-DorsalRuntime.prototype.DATA_PREFIX = 'd';
+DorsalCore.prototype.VERSION = '0.3.2';
+DorsalCore.prototype.CSS_PREFIX = '.js-d-';
+DorsalCore.prototype.DATA_PREFIX = 'd';
 
-DorsalRuntime.prototype.registerPlugin = function(pluginName, callback) {
+DorsalCore.prototype.registerPlugin = function(pluginName, callback) {
     if (!this.plugins) {
         this.plugins = {};
     }
     this.plugins[pluginName] = callback;
 };
 
-DorsalRuntime.prototype.unregisterPlugin = function(pluginName) {
+DorsalCore.prototype.unregisterPlugin = function(pluginName) {
     delete this.plugins[pluginName];
 };
 
-DorsalRuntime.prototype._getDatasetAttributes = function(el) {
+DorsalCore.prototype._getDatasetAttributes = function(el) {
     var dataset = el.dataset,
         dataAttributes = {};
 
@@ -46,7 +46,7 @@ DorsalRuntime.prototype._getDatasetAttributes = function(el) {
     return dataAttributes;
 }
 
-DorsalRuntime.prototype._getDataAttributes = function(el) {
+DorsalCore.prototype._getDataAttributes = function(el) {
     var dataAttributes = {},
         attributes = el.attributes,
         attributesLength = attributes.length,
@@ -65,7 +65,7 @@ DorsalRuntime.prototype._getDataAttributes = function(el) {
     return dataAttributes;
 }
 
-DorsalRuntime.prototype._getAttributes = function(el) {
+DorsalCore.prototype._getAttributes = function(el) {
     if (el.dataset) {
         return this._getDatasetAttributes(el);
     }
@@ -73,7 +73,7 @@ DorsalRuntime.prototype._getAttributes = function(el) {
     return this._getDataAttributes(el);
 }
 
-DorsalRuntime.prototype._runPlugin = function(plugin, el) {
+DorsalCore.prototype._runPlugin = function(plugin, el) {
     var data = this._getAttributes(el);
     plugin.call(el, {
         el: el,
@@ -81,7 +81,7 @@ DorsalRuntime.prototype._runPlugin = function(plugin, el) {
     });
 }
 
-DorsalRuntime.prototype.wire = function(el) {
+DorsalCore.prototype.wire = function(el) {
     if (!this.plugins) {
         throw new Error('No plugins registered with Dorsal');
     }
@@ -109,8 +109,8 @@ DorsalRuntime.prototype.wire = function(el) {
     }
 };
 
-var Dorsal = new DorsalRuntime();
+var Dorsal = new DorsalCore();
 
 Dorsal.create = function() {
-    return new DorsalRuntime();
+    return new DorsalCore();
 };
