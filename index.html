@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Dorsal by gagoar</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Dorsal</h1>
+        <p>A client-side JavaScript boilerplate automation system.</p>
+
+        <p class="view"><a href="https://github.com/gagoar/dorsal">View the Project on GitHub <small>gagoar/dorsal</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/gagoar/dorsal/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/gagoar/dorsal/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/gagoar/dorsal">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="dorsal-" class="anchor" href="#dorsal-"><span class="octicon octicon-link"></span></a>Dorsal <a href="https://travis-ci.org/eventbrite/dorsal"><img src="https://travis-ci.org/eventbrite/dorsal.svg" alt="Build Status"></a>
+</h1>
+
+<p><a href="https://travis-ci.org/eventbrite/dorsal"><img src="https://travis-ci.org/eventbrite/dorsal.svg" alt="Build Status"></a> <a href="http://badge.fury.io/js/dorsal"><img src="https://badge.fury.io/js/dorsal.svg" alt="NPM version"></a></p>
+
+<h2>
+<a name="what-is-it" class="anchor" href="#what-is-it"><span class="octicon octicon-link"></span></a>What is it?</h2>
+
+<p>TL;DR, a client-side JavaScript boilerplate automation system.</p>
+
+<p>Dorsal allows you to register your bespoke, artisinal, hand crafted plugins. It will then scour the DOM in search of your plugins and instantiate them. We were inspired by the directives system in Angular and wanted to bring something similar to our frontend stack. Dorsal, is platform agnostic, has no dependencies and is designed to work IE8+.</p>
+
+<h2>
+<a name="setup" class="anchor" href="#setup"><span class="octicon octicon-link"></span></a>Setup</h2>
+
+<p>Dorsal is agnostic to AMD, CommonJS and namespaces.</p>
+
+<ul>
+<li>CommonJS/Node: <code>require('dorsal')</code>
+</li>
+<li>AMD: <code>require('node_modules/dorsal/dist/dorsal')</code>
+</li>
+<li>Namespaces: <code>window.Dorsal</code> after adding src/dorsal.js as a script</li>
+</ul><p>Installation is easiest using npm: <code>npm install dorsal --save</code></p>
+
+<h2>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+
+<h2>
+<a name="register-a-plugin" class="anchor" href="#register-a-plugin"><span class="octicon octicon-link"></span></a>Register a plugin</h2>
+
+<p>The following is an example of a plugin and its usage. We define a Dorsal plugin named <code>hello-world</code>. Once <code>wire</code> is called Dorsal will query for <code>.js-d-hello-world</code> in the DOM and all occurances will be initialized.</p>
+
+<pre><code>&lt;div class='js-d-hello-world'&gt;&lt;/div&gt;
+
+&lt;script&gt;
+    Dorsal.registerPlugin('hello-world', function(options) {
+        console.log(this === options.el); // true
+
+        options.el.innerHTML = 'Hello World';
+    });
+
+    Dorsal.wire()
+&lt;/script&gt;
+</code></pre>
+
+<h2>
+<a name="wiring" class="anchor" href="#wiring"><span class="octicon octicon-link"></span></a>Wiring</h2>
+
+<p>You don't need to wire your whole page. <code>Dorsal.wire()</code> accepts an element as an optional argument. If no element is provided it will use <code>document</code> as the parent and find all occurances within it.</p>
+
+<pre><code>&lt;div class='js-d-other-plugin'&gt;&lt;/div&gt;
+
+&lt;div class='some-arbitrary-parent-selector'&gt;
+    &lt;div class='js-d-hello-world'&gt;&lt;/div&gt;
+    &lt;div class='js-d-hello-world'&gt;&lt;/div&gt;
+    &lt;div class='js-d-hello-world'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    // if using jquery
+    Dorsal.wire($('.js-d-other-plugin').get(0));
+    Dorsal.wire($('.some-arbitrary-parent-selector').get(0));
+&lt;/script&gt;
+</code></pre>
+
+<h2>
+<a name="arguments-and-data-attributes" class="anchor" href="#arguments-and-data-attributes"><span class="octicon octicon-link"></span></a>Arguments and Data Attributes</h2>
+
+<p>Sometimes you will want to pass options to your selectors. In such cases you can use data attributes.</p>
+
+<pre><code>&lt;div
+    class='js-d-hello-world'
+    data-d-non-standard-hello-variant='bacon'
+    data-d-prefix='Ohhhh, '
+&gt;&lt;/div&gt;
+
+&lt;script&gt;
+    Dorsal.registerPlugin('hello-world', function(options) {
+        console.log(options.data.nonStandardHelloVariant); // bacon
+
+        var helloMap = [
+                bacon: 'Bacon world',
+                default: 'Hello world'
+            ],
+            variant = options.nonStandardHelloVariant || 'default',
+            prefix = options.data.prefix || '';
+
+        options.el.innerHTML = prefix + helloMap[variant];
+    });
+
+    Dorsal.wire()
+&lt;/script&gt;
+</code></pre>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>See it in action by opening <code>examples/lorem.html</code>. This use case automatically inserts Lorem ipsum wherever a <code>.js-d-lorem</code> class is used.</p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright 2014 Eventbrite</p>
+
+<p>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+
+<p>See LICENSE.md.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/gagoar">gagoar</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
