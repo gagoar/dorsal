@@ -7,7 +7,7 @@
       "type": "git",
       "url": "http://github.com/eventbrite/dorsal.git"
   },
-  "main": "dorsal.js",
+  "main": "dist/dorsal.js",
   "scripts": {
     "test": "grunt test"
   },
