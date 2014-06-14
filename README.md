@@ -1,5 +1,6 @@
 Dorsal
 ======
+[![Build Status](https://travis-ci.org/eventbrite/dorsal.svg)](https://travis-ci.org/eventbrite/dorsal) [![NPM version](https://badge.fury.io/js/dorsal.svg)](http://badge.fury.io/js/dorsal)
 
 A JavaScript boilerplate automation system. Using bespoke plugins, Dorsal will
 manage instantiating JS components and common design patterns. Developers need
