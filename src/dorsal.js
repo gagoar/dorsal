@@ -34,7 +34,7 @@ DorsalCore.prototype._getDatasetAttributes = function(el) {
     var dataset = el.dataset,
         dataAttributes = {};
 
-    for (key in dataset) {
+    for (var key in dataset) {
         if ((new RegExp('^' + this.DATA_PREFIX + '[A-Z]')).test(key)) {
             var name = key.substr(this.DATA_PREFIX.length),
                 outputKey = name[0].toLowerCase() + name.substr(1);
@@ -46,6 +46,9 @@ DorsalCore.prototype._getDatasetAttributes = function(el) {
     return dataAttributes;
 }
 
+DorsalCore.prototype._normalizeDataAttribute =  function(attr, _) {
+    return attr.toUpperCase().replace('-','');
+            }
 DorsalCore.prototype._getDataAttributes = function(el) {
     var dataAttributes = {},
         attributes = el.attributes,
@@ -55,9 +58,9 @@ DorsalCore.prototype._getDataAttributes = function(el) {
 
     for (i = 0; i < attributesLength; i++) {
         if ((new RegExp('^data-' + this.DATA_PREFIX + '-')).test(attributes[i][nameAttribute])) {
-            var name = attributes[i][nameAttribute].substr(5 + this.DATA_PREFIX.length + 1).toLowerCase().replace(/(\-[a-zA-Z])/g, function($1) {
-                return $1.toUpperCase().replace('-','');
-            })
+            var name = attributes[i][nameAttribute].substr(5 + this.DATA_PREFIX.length + 1)
+                                                   .toLowerCase()
+                                                   .replace(/(\-[a-zA-Z])/g, this._normalizeDataAttribute);
             dataAttributes[name] = attributes[i].value;
         }
     }
