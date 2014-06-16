@@ -6,7 +6,7 @@ What is it?
 
 TL;DR, a client-side JavaScript boilerplate automation system.
 
-Dorsal allows you to register your bespoke, artisinal, hand crafted plugins. It will then scour the DOM in search of your plugins and instantiate them. We were inspired by the directives system in Angular and wanted to bring something similar to our frontend stack. Dorsal, is platform agnostic, has no dependencies and is designed to work IE8+.
+Dorsal allows you to register your bespoke. It will then scour the DOM in search of your plugins and instantiate them. We were inspired by the directives system in Angular and wanted to bring something similar to our frontend stack. Dorsal is platform agnostic, has no dependencies, and has been tested to work with IE8+, Firefox, Safari, and Chrome.
 
 ## Setup
 
