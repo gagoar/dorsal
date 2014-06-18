@@ -34,7 +34,7 @@ DorsalCore.prototype._getDatasetAttributes = function(el) {
     var dataset = el.dataset,
         dataAttributes = {};
 
-    for (key in dataset) {
+    for (var key in dataset) {
         if ((new RegExp('^' + this.DATA_PREFIX + '[A-Z]')).test(key)) {
             var name = key.substr(this.DATA_PREFIX.length),
                 outputKey = name[0].toLowerCase() + name.substr(1);
@@ -44,8 +44,11 @@ DorsalCore.prototype._getDatasetAttributes = function(el) {
     }
 
     return dataAttributes;
-}
+};
 
+DorsalCore.prototype._normalizeDataAttribute =  function(attr) {
+    return attr.toUpperCase().replace('-','');
+};
 DorsalCore.prototype._getDataAttributes = function(el) {
     var dataAttributes = {},
         attributes = el.attributes,
@@ -55,15 +58,15 @@ DorsalCore.prototype._getDataAttributes = function(el) {
 
     for (i = 0; i < attributesLength; i++) {
         if ((new RegExp('^data-' + this.DATA_PREFIX + '-')).test(attributes[i][nameAttribute])) {
-            var name = attributes[i][nameAttribute].substr(5 + this.DATA_PREFIX.length + 1).toLowerCase().replace(/(\-[a-zA-Z])/g, function($1) {
-                return $1.toUpperCase().replace('-','');
-            })
+            var name = attributes[i][nameAttribute].substr(5 + this.DATA_PREFIX.length + 1)
+                                                   .toLowerCase()
+                                                   .replace(/(\-[a-zA-Z])/g, this._normalizeDataAttribute);
             dataAttributes[name] = attributes[i].value;
         }
     }
 
     return dataAttributes;
-}
+};
 
 DorsalCore.prototype._getAttributes = function(el) {
     if (el.dataset) {
@@ -71,7 +74,7 @@ DorsalCore.prototype._getAttributes = function(el) {
     }
 
     return this._getDataAttributes(el);
-}
+};
 
 DorsalCore.prototype._runPlugin = function(plugin, el) {
     var data = this._getAttributes(el);
@@ -79,7 +82,7 @@ DorsalCore.prototype._runPlugin = function(plugin, el) {
         el: el,
         data: data
     });
-}
+};
 
 DorsalCore.prototype.wire = function(el) {
     if (!this.plugins) {
@@ -88,7 +91,6 @@ DorsalCore.prototype.wire = function(el) {
 
     var pluginKeys = Object.keys(this.plugins),
         index = 0,
-        elementIndex = 0,
         length = pluginKeys.length,
         elements,
         data,
@@ -103,8 +105,8 @@ DorsalCore.prototype.wire = function(el) {
             this._runPlugin(this.plugins[pluginKeys[index]], el);
         }
 
-        for (elementIndex = 0; elementIndex < elements.length; elementIndex++) {
-            this._runPlugin(this.plugins[pluginKeys[index]], elements[elementIndex]);
+        for (var elementIndex = 0, element; (element = elements[elementIndex]); elementIndex++) {
+            this._runPlugin(this.plugins[pluginKeys[index]], element);
         }
     }
 };
