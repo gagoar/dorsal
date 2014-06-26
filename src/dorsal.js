@@ -19,6 +19,32 @@ DorsalCore.prototype.VERSION = '0.3.2';
 DorsalCore.prototype.CSS_PREFIX = '.js-d-';
 DorsalCore.prototype.DATA_PREFIX = 'd';
 
+// Function.bind polyfill
+if (!Function.prototype.bind) {
+    Function.prototype.bind = function (oThis) {
+        if (typeof this !== "function") {
+            // closest thing possible to the ECMAScript 5
+            // internal IsCallable function
+            throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+        }
+
+        var aArgs = Array.prototype.slice.call(arguments, 1),
+            fToBind = this,
+            fNOP = function () {},
+            fBound = function () {
+              return fToBind.apply(this instanceof fNOP && oThis
+                     ? this
+                     : oThis,
+                     aArgs.concat(Array.prototype.slice.call(arguments)));
+            };
+
+        fNOP.prototype = this.prototype;
+        fBound.prototype = new fNOP();
+
+        return fBound;
+    };
+}
+
 DorsalCore.prototype.registerPlugin = function(pluginName, callback) {
     if (!this.plugins) {
         this.plugins = {};
@@ -84,6 +110,21 @@ DorsalCore.prototype._runPlugin = function(plugin, el) {
     });
 };
 
+DorsalCore.prototype._wirePlugin = function(plugin, el) {
+    window.setTimeout(function() {
+        pluginCSSClass = this.CSS_PREFIX + plugin;
+        elements = el.querySelectorAll(pluginCSSClass);
+
+        if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
+            this._runPlugin(this.plugins[plugin], el);
+        }
+
+        for (var elementIndex = 0, element; (element = elements[elementIndex]); elementIndex++) {
+            this._runPlugin(this.plugins[plugin], element);
+        }
+    }.bind(this), 0);
+}
+
 DorsalCore.prototype.wire = function(el) {
     if (!this.plugins) {
         throw new Error('No plugins registered with Dorsal');
@@ -98,16 +139,7 @@ DorsalCore.prototype.wire = function(el) {
         pluginCSSClass;
 
     for (; index < length; index++) {
-        pluginCSSClass = this.CSS_PREFIX + pluginKeys[index];
-        elements = el.querySelectorAll(pluginCSSClass);
-
-        if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
-            this._runPlugin(this.plugins[pluginKeys[index]], el);
-        }
-
-        for (var elementIndex = 0, element; (element = elements[elementIndex]); elementIndex++) {
-            this._runPlugin(this.plugins[pluginKeys[index]], element);
-        }
+        this._wirePlugin(pluginKeys[index], el);
     }
 };
 
