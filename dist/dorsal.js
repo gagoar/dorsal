@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*! dorsal - v0.3.2 - 2014-06-12 */
+/*! dorsal - v0.3.3 - 2014-06-27 */
 
 (function(root, factory) {
     if(typeof exports === 'object') {
@@ -30,7 +30,7 @@
 
 var DorsalCore = function() {};
 
-DorsalCore.prototype.VERSION = '0.3.2';
+DorsalCore.prototype.VERSION = '0.3.3';
 DorsalCore.prototype.CSS_PREFIX = '.js-d-';
 DorsalCore.prototype.DATA_PREFIX = 'd';
 
@@ -49,7 +49,7 @@ DorsalCore.prototype._getDatasetAttributes = function(el) {
     var dataset = el.dataset,
         dataAttributes = {};
 
-    for (key in dataset) {
+    for (var key in dataset) {
         if ((new RegExp('^' + this.DATA_PREFIX + '[A-Z]')).test(key)) {
             var name = key.substr(this.DATA_PREFIX.length),
                 outputKey = name[0].toLowerCase() + name.substr(1);
@@ -59,8 +59,11 @@ DorsalCore.prototype._getDatasetAttributes = function(el) {
     }
 
     return dataAttributes;
-}
+};
 
+DorsalCore.prototype._normalizeDataAttribute =  function(attr) {
+    return attr.toUpperCase().replace('-','');
+};
 DorsalCore.prototype._getDataAttributes = function(el) {
     var dataAttributes = {},
         attributes = el.attributes,
@@ -70,15 +73,15 @@ DorsalCore.prototype._getDataAttributes = function(el) {
 
     for (i = 0; i < attributesLength; i++) {
         if ((new RegExp('^data-' + this.DATA_PREFIX + '-')).test(attributes[i][nameAttribute])) {
-            var name = attributes[i][nameAttribute].substr(5 + this.DATA_PREFIX.length + 1).toLowerCase().replace(/(\-[a-zA-Z])/g, function($1) {
-                return $1.toUpperCase().replace('-','');
-            })
+            var name = attributes[i][nameAttribute].substr(5 + this.DATA_PREFIX.length + 1)
+                                                   .toLowerCase()
+                                                   .replace(/(\-[a-zA-Z])/g, this._normalizeDataAttribute);
             dataAttributes[name] = attributes[i].value;
         }
     }
 
     return dataAttributes;
-}
+};
 
 DorsalCore.prototype._getAttributes = function(el) {
     if (el.dataset) {
@@ -86,7 +89,7 @@ DorsalCore.prototype._getAttributes = function(el) {
     }
 
     return this._getDataAttributes(el);
-}
+};
 
 DorsalCore.prototype._runPlugin = function(plugin, el) {
     var data = this._getAttributes(el);
@@ -94,6 +97,22 @@ DorsalCore.prototype._runPlugin = function(plugin, el) {
         el: el,
         data: data
     });
+};
+
+DorsalCore.prototype._wirePlugin = function(plugin, el) {
+    var self = this;
+    window.setTimeout(function() {
+        var pluginCSSClass = self.CSS_PREFIX + plugin,
+            elements = el.querySelectorAll(pluginCSSClass);
+
+        if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
+            self._runPlugin(self.plugins[plugin], el);
+        }
+
+        for (var elementIndex = 0, element; (element = elements[elementIndex]); elementIndex++) {
+            self._runPlugin(self.plugins[plugin], element);
+        }
+    }, 0);
 }
 
 DorsalCore.prototype.wire = function(el) {
@@ -103,24 +122,11 @@ DorsalCore.prototype.wire = function(el) {
 
     var pluginKeys = Object.keys(this.plugins),
         index = 0,
-        elementIndex = 0,
         length = pluginKeys.length,
-        elements,
-        data,
-        el = el || document,
-        pluginCSSClass;
+        el = el || document;
 
     for (; index < length; index++) {
-        pluginCSSClass = this.CSS_PREFIX + pluginKeys[index];
-        elements = el.querySelectorAll(pluginCSSClass);
-
-        if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
-            this._runPlugin(this.plugins[pluginKeys[index]], el);
-        }
-
-        for (elementIndex = 0; elementIndex < elements.length; elementIndex++) {
-            this._runPlugin(this.plugins[pluginKeys[index]], elements[elementIndex]);
-        }
+        this._wirePlugin(pluginKeys[index], el);
     }
 };
 

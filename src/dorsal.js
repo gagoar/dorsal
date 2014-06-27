@@ -15,7 +15,7 @@
 
 var DorsalCore = function() {};
 
-DorsalCore.prototype.VERSION = '0.3.2';
+DorsalCore.prototype.VERSION = '0.3.3';
 DorsalCore.prototype.CSS_PREFIX = '.js-d-';
 DorsalCore.prototype.DATA_PREFIX = 'd';
 
