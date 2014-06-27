@@ -33,7 +33,7 @@
         });
 
         it('registers a plugin named "test"', function() {
-            expect(this.dorsal.plugins['test']).toBeDefined();
+            expect(this.dorsal.plugins.test).toBeDefined();
         });
 
         describe('unregistering plugins', function() {
@@ -42,7 +42,7 @@
             });
 
             it('unregisters a plugin named "test"', function() {
-                expect(this.dorsal.plugins['test']).not.toBeDefined();
+                expect(this.dorsal.plugins.test).not.toBeDefined();
             });
         });
     });
