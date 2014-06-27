@@ -109,10 +109,11 @@ module.exports = function(grunt) {
         },
         jshint: {
           files: {
-            src: ['src/**/*.js']
+            src: ['src/**/*.js', 'tests/*.js']
           },
           options: {
-            shadow: true
+            shadow: true,
+            es3: true
           }
         }
     });
@@ -130,7 +131,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', [
         'clean',
-        'jshint',
         'test',
         'concat',
         'umd',
