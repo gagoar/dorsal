@@ -98,7 +98,7 @@ DorsalCore.prototype._wirePlugin = function(plugin, el) {
             self._runPlugin(self.plugins[plugin], element);
         }
     }, 0);
-}
+};
 
 DorsalCore.prototype.wire = function(el) {
     if (!this.plugins) {
