@@ -106,6 +106,14 @@ module.exports = function(grunt) {
                     ]
                 }
             }
+        },
+        jshint: {
+          files: {
+            src: ['src/**/*.js']
+          },
+          options: {
+            shadow: true
+          }
         }
     });
 
@@ -116,11 +124,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
-    grunt.registerTask('test', ['jasmine']);
+    grunt.registerTask('test', ['jasmine', 'jshint']);
 
     grunt.registerTask('default', [
         'clean',
+        'jshint',
         'test',
         'concat',
         'umd',
