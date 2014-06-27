@@ -16,6 +16,11 @@
  describe("DorsalJS", function() {
     beforeEach(function() {
         this.dorsal = new DorsalCore();
+        this.clock = sinon.useFakeTimers();
+    });
+
+    afterEach(function() {
+        this.clock.restore();
     });
 
     it('initializes without any plugin state', function() {
@@ -52,6 +57,7 @@
 
             setFixtures(this.html);
             this.dorsal.wire();
+            this.clock.tick(10);
         });
 
         it('runs the test plugin', function() {
@@ -63,6 +69,7 @@
             beforeEach(function() {
                 this.$el = $(this.html);
                 this.dorsal.wire(this.$el.get(0));
+                this.clock.tick(10);
             });
 
             it('runs the test plugin on a DOM node', function() {
@@ -83,6 +90,7 @@
             this.html = '<div class="js-d-test" data-d-test-one-yay="hello" data-d-test-two-yay="world"></div>';
             setFixtures(this.html);
             this.dorsal.wire();
+            this.clock.tick(10);
         });
 
         it('gets data attributes without dataset', function() {
