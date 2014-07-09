@@ -162,7 +162,8 @@ DorsalCore.prototype._wireElement = function(el, pluginName) {
 };
 
 DorsalCore.prototype._detachPlugin = function(el, pluginName) {
-    var remainingPlugins;
+    var remainingPlugins,
+        hasActuallyDestroyed = false;
 
     if (el.getAttribute(this.DATA_DORSAL_WIRED).indexOf(pluginName) > -1 &&
         this.plugins[pluginName].destroy) {
@@ -175,16 +176,16 @@ DorsalCore.prototype._detachPlugin = function(el, pluginName) {
                 [pluginName]
         });
 
-        remainingPlugins = el.getAttribute(this.DATA_DORSAL_WIRED).split(' ');
-        // remove 1 instance, at the index where the plugin name exists
-        remainingPlugins.splice(arrayIndexOf(remainingPlugins, pluginName), 1);
-
-        el.setAttribute(this.DATA_DORSAL_WIRED, remainingPlugins.join(' '));
-
-        return true;
+        hasActuallyDestroyed = true;
     }
 
-    return false;
+    // remove plugin
+    remainingPlugins = el.getAttribute(this.DATA_DORSAL_WIRED).split(' ');
+    // remove 1 instance, at the index where the plugin name exists
+    remainingPlugins.splice(arrayIndexOf(remainingPlugins, pluginName), 1);
+    el.setAttribute(this.DATA_DORSAL_WIRED, remainingPlugins.join(' '));
+
+    return hasActuallyDestroyed;
 };
 
 /**
