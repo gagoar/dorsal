@@ -25,15 +25,15 @@ DorsalCore.prototype.ELEMENT_TO_PLUGINS_MAP = {};
 
 // from: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
 var createGUID = (function() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-               .toString(16)
-               .substring(1);
-  }
-  return function() {
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+           .toString(16)
+           .substring(1);
+    }
+    return function() {
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
            s4() + '-' + s4() + s4() + s4();
-  };
+    };
 })();
 
 function arrayIndexOf(arr, value) {
@@ -83,6 +83,7 @@ DorsalCore.prototype._getDatasetAttributes = function(el) {
 DorsalCore.prototype._normalizeDataAttribute =  function(attr) {
     return attr.toUpperCase().replace('-','');
 };
+
 DorsalCore.prototype._getDataAttributes = function(el) {
     var dataAttributes = {},
         attributes = el.attributes,
