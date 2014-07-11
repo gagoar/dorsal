@@ -76,6 +76,10 @@
                 expect(this.$el).toHaveHtml('hello, world');
             });
 
+            it('has a dorsal guid', function() {
+                expect(this.$el.attr('dorsal-guid')).toBeTruthy();
+            });
+
         });
 
     });
@@ -110,5 +114,144 @@
             expect(attributes.testTwoYay).toBe('world');
         });
 
+        it('marks element as wired', function() {
+            expect($('.js-d-test').data('xdWired')).toContain('test');
+        });
+
     });
+
+    describe('element lifecycle', function() {
+
+        beforeEach(function() {
+            var helloReturnedObject = {id: 'hello'},
+                self = this;
+
+            this.isReturnedObject = false;
+
+            this.dorsal.registerPlugin('hello', {
+                create: function(options) {
+                    options.el.innerHTML = options.el.innerHTML + options.data.h;
+
+                    return helloReturnedObject;
+                },
+                destroy: function(options) {
+                    self.isReturnedObject = options.instance.id === helloReturnedObject.id;
+                }
+            });
+
+            this.dorsal.registerPlugin('world', {
+                create: function(options) {
+                    options.el.innerHTML = options.el.innerHTML + options.data.w;
+                },
+                destroy: function(options) {
+                    self.worldData = options.data;
+                }
+            });
+
+            this.$html = $('<div class="js-d-hello js-d-world" data-d-h="hello" data-d-w="world"></div>');
+            this.dorsal.wire(this.$html.get(0));
+            this.clock.tick(10);
+        });
+
+        it('does not explode when unwiring an unwired element', function() {
+            expect(this.dorsal.unwire($('<div>').get(0), 'pizza')).toBeFalsy();
+        });
+
+        it('attaches multiple plugins to an element', function() {
+            expect(this.$html.data('xdWired').indexOf('hello') > -1).toBeTruthy();
+            expect(this.$html.data('xdWired').indexOf('world') > -1).toBeTruthy();
+        });
+
+        it('does not allow wiring previously wired plugins', function() {
+            this.dorsal.wire(this.$html.get(0), 'hello');
+            expect(this.$html.data('xdWired').match(/hello/g).length).toBe(1);
+            expect(this.$html.text().match(/hello/g).length).toBe(1);
+        });
+
+        describe('unwire all plugins', function() {
+
+            beforeEach(function() {
+                this.dorsal.unwire(this.$html.get(0));
+            });
+
+            it('removes just the hello and world plugins', function() {
+                expect(this.$html.data('xdWired').indexOf('hello') === -1).toBeTruthy();
+                expect(this.$html.data('xdWired').indexOf('world') === -1).toBeTruthy();
+            });
+
+            it('passes the returned value from create into destroy', function() {
+                expect(this.isReturnedObject).toBeTruthy();
+            });
+
+            it('passes data to destroy', function() {
+                expect(this.worldData.w).toBe('world');
+            });
+
+        });
+
+        describe('unwire just the hello plugin', function() {
+
+            beforeEach(function() {
+                this.dorsal.unwire(this.$html.get(0));
+            });
+
+            it('removes just the hello plugin', function() {
+                expect(this.$html.data('xdWired').indexOf('hello') === -1).toBeTruthy();
+                expect(this.$html.data('xdWired').indexOf('world') === -1).toBeTruthy();
+            });
+
+            it('passes the returned value from create into destroy', function() {
+                expect(this.isReturnedObject).toBeTruthy();
+            });
+
+            it('passes data to destroy', function() {
+                expect(this.worldData.w).toBe('world');
+            });
+
+        });
+
+        describe('wiring just the pizza plugin', function() {
+
+            beforeEach(function() {
+                this.dorsal.registerPlugin('pizza', function() {});
+                this.dorsal.registerPlugin('hotdog', function() {});
+
+                this.$html.addClass('js-d-pizza js-d-hotdog');
+
+                this.dorsal.wire(this.$html.get(0), 'pizza');
+                this.clock.tick(10);
+            });
+
+            it('runs wire just for pizza', function() {
+                expect(this.$html.data('xdWired').indexOf('pizza') !== -1).toBeTruthy();
+                expect(this.$html.data('xdWired').indexOf('hotdog') === -1).toBeTruthy();
+            });
+
+        });
+
+        describe('rewire', function() {
+
+            beforeEach(function() {
+                this.dorsal.rewire(this.$html.get(0));
+                this.clock.tick(10);
+            });
+
+            it('runs unwire', function() {
+                expect(this.isReturnedObject).toBeTruthy();
+            });
+
+            it('runs wire', function() {
+                // destroy doesn't remove hello, this proves hello was run again
+                expect(this.$html.text().match(/hello/g).length).toBe(2);
+            });
+
+            it('keeps hello and world in wired attribute', function() {
+                expect(this.$html.data('xdWired').indexOf('hello') > -1).toBeTruthy();
+                expect(this.$html.data('xdWired').indexOf('world') > -1).toBeTruthy();
+            });
+
+        });
+
+    });
+
 });
