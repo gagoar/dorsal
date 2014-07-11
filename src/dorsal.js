@@ -23,36 +23,6 @@ DorsalCore.prototype.DATA_DORSAL_WIRED = 'data-' + DorsalCore.prototype.DATA_IGN
 DorsalCore.prototype.GUID_KEY = 'dorsal-guid';
 DorsalCore.prototype.ELEMENT_TO_PLUGINS_MAP = {};
 
-// from: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-var createGUID = (function() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-           .toString(16)
-           .substring(1);
-    }
-    return function() {
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-           s4() + '-' + s4() + s4() + s4();
-    };
-})();
-
-function arrayIndexOf(arr, value) {
-    var lengthOfArr = arr.length,
-        i = 0;
-
-    if (arr.indexOf) {
-        return arr.indexOf(value);
-    }
-
-    for (; i < lengthOfArr; i++) {
-        if (arr[i] === value) {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
 DorsalCore.prototype.registerPlugin = function(pluginName, callback) {
     if (!this.plugins) {
         this.plugins = {};
@@ -145,18 +115,21 @@ DorsalCore.prototype._runPlugin = function(el, pluginName) {
     }
 };
 
-DorsalCore.prototype._wireElement = function(el, pluginName) {
+DorsalCore.prototype._wireElement = function(el, pluginName, deferred) {
     var self = this;
     window.setTimeout(function() {
         var pluginCSSClass = self.CSS_PREFIX + pluginName,
-            elements = el.querySelectorAll(pluginCSSClass);
+            elements = el.querySelectorAll(pluginCSSClass),
+            pluginResponse;
 
         if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
-            self._runPlugin(el, pluginName);
+            pluginResponse = self._runPlugin(el, pluginName);
+            deferred.notify(pluginName, pluginResponse, self);
         }
 
         for (var elementIndex = 0, element; (element = elements[elementIndex]); elementIndex++) {
-            self._runPlugin(element, pluginName);
+            pluginResponse = self._runPlugin(element, pluginName);
+            deferred.notify(pluginName, pluginResponse, self);
         }
     }, 0);
 };
@@ -221,28 +194,41 @@ DorsalCore.prototype.unwire = function(el, pluginName) {
 };
 
 DorsalCore.prototype.wire = function(el, pluginName) {
+    var deferred = new DorsalDeferred(this),
+        pluginKeys = Object.keys(this.plugins),
+        pluginCount = (pluginName !== undefined) ? 1 : pluginKeys.length,
+        pluginsCalled = 0;
+
+    deferred.promise().progress(function() {
+        pluginsCalled++;
+        if (pluginsCalled === pluginCount) {
+            deferred.resolve();
+        }
+    });
+
     if (!this.plugins) {
         throw new Error('No plugins registered with Dorsal');
     }
 
     if (pluginName) {
-        this._wireElement(el, [pluginName]);
-        return;
+        this._wireElement(el, [pluginName], deferred);
+        return deferred.promise();
     }
 
-    var pluginKeys = Object.keys(this.plugins),
-        index = 0,
+    var index = 0,
         length = pluginKeys.length,
         el = el || document;
 
     for (; index < length; index++) {
-        this._wireElement(el, pluginKeys[index]);
+        this._wireElement(el, pluginKeys[index], deferred);
     }
+
+    return deferred.promise();
 };
 
 DorsalCore.prototype.rewire = function(el, pluginName) {
     this.unwire(el, pluginName);
-    this.wire(el, pluginName);
+    return this.wire(el, pluginName);
 };
 
 var Dorsal = new DorsalCore();

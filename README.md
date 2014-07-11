@@ -77,6 +77,20 @@ Sometimes you'll want to rewire something if it changes dynamically and your plu
         Dorsal.rewire($('.js-lorem-2').get(0), 'lorem');
     </script>
 
+## Deferred Promises
+
+Dorsal plugins run asynchronously, preventing too much blocking on the page. To more easily determine when it completes, Dorsal returns a jQuery compatible [deferred promise](http://promises-aplus.github.io/promises-spec/) from the `Dorsal.wire()` and `Dorsal.rewire()` functions. Every plugin that runs will trigger a progress notification, providing the plugin's return value to all registered progress handlers. The promise will resolve once all plugins have been processed, triggering the done handlers.
+
+    <script>
+        Dorsal.wire()
+            .progress(function(pluginName, pluginResponse, dorsal) {
+                alert('Plugin "' + pluginName + '" completed!');
+            })
+            .done(function(dorsal) {
+                alert('Dorsal completed!');
+            });
+    </script>
+
 ## Arguments and Data Attributes
 
 Sometimes you will want to pass options to your selectors. In such cases you can use data attributes.

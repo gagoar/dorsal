@@ -56,12 +56,31 @@
             this.html = '<div class="js-d-test"></div>';
 
             setFixtures(this.html);
-            this.dorsal.wire();
+
+            this.dorsalDoneStub = sinon.stub();
+            this.dorsalProgressStub = sinon.stub();
+
+            this.promise = this.dorsal.wire();
+            this.promise.done(this.dorsalDoneStub);
+            this.promise.progress(this.dorsalProgressStub);
+
             this.clock.tick(10);
         });
 
         it('runs the test plugin', function() {
             expect($('.js-d-test')).toHaveHtml('hello, world');
+        });
+
+        it('triggers a progress notify function per plugin', function() {
+            expect(this.dorsalProgressStub).toHaveBeenCalledOnce();
+        });
+
+        it('resolves the promise when complete', function() {
+            expect(this.promise.state()).toBe('resolved');
+        });
+
+        it('triggers deferred done function when complete', function() {
+            expect(this.dorsalDoneStub).toHaveBeenCalledOnce();
         });
 
         describe('after initial wire', function() {
@@ -232,7 +251,7 @@
         describe('rewire', function() {
 
             beforeEach(function() {
-                this.dorsal.rewire(this.$html.get(0));
+                this.promise = this.dorsal.rewire(this.$html.get(0));
                 this.clock.tick(10);
             });
 
@@ -248,6 +267,10 @@
             it('keeps hello and world in wired attribute', function() {
                 expect(this.$html.data('xdWired').indexOf('hello') > -1).toBeTruthy();
                 expect(this.$html.data('xdWired').indexOf('world') > -1).toBeTruthy();
+            });
+
+            it('returns a deferred promise', function() {
+                expect(this.promise.state()).toBe('resolved');
             });
 
         });
