@@ -115,7 +115,7 @@ DorsalCore.prototype._runPlugin = function(el, pluginName) {
     }
 };
 
-DorsalCore.prototype._wireElement = function(el, pluginName) {
+DorsalCore.prototype._wireElement = function(el, pluginName, deferred) {
     var self = this;
     window.setTimeout(function() {
         var pluginCSSClass = self.CSS_PREFIX + pluginName,
@@ -123,10 +123,12 @@ DorsalCore.prototype._wireElement = function(el, pluginName) {
 
         if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
             self._runPlugin(el, pluginName);
+            deferred.notify();
         }
 
         for (var elementIndex = 0, element; (element = elements[elementIndex]); elementIndex++) {
             self._runPlugin(element, pluginName);
+            deferred.notify();
         }
     }, 0);
 };
@@ -191,24 +193,33 @@ DorsalCore.prototype.unwire = function(el, pluginName) {
 };
 
 DorsalCore.prototype.wire = function(el, pluginName) {
-    var deferred = new DorsalDeferred();
+    var deferred = new DorsalDeferred(this),
+        pluginKeys = Object.keys(this.plugins),
+        pluginCount = (pluginName !== undefined) ? 1 : pluginKeys.length,
+        pluginsCalled = 0;
+
+    deferred.promise().progress(function() {
+        pluginsCalled++;
+        if (pluginsCalled === pluginCount) {
+            deferred.resolve();
+        }
+    });
 
     if (!this.plugins) {
         throw new Error('No plugins registered with Dorsal');
     }
 
     if (pluginName) {
-        this._wireElement(el, [pluginName]);
-        return;
+        this._wireElement(el, [pluginName], deferred);
+        return deferred.promise();
     }
 
-    var pluginKeys = Object.keys(this.plugins),
-        index = 0,
+    var index = 0,
         length = pluginKeys.length,
         el = el || document;
 
     for (; index < length; index++) {
-        this._wireElement(el, pluginKeys[index]);
+        this._wireElement(el, pluginKeys[index], deferred);
     }
 
     return deferred.promise();
@@ -216,7 +227,7 @@ DorsalCore.prototype.wire = function(el, pluginName) {
 
 DorsalCore.prototype.rewire = function(el, pluginName) {
     this.unwire(el, pluginName);
-    this.wire(el, pluginName);
+    return this.wire(el, pluginName);
 };
 
 var Dorsal = new DorsalCore();
