@@ -4,7 +4,7 @@ Dorsal
 What is it?
 -----------
 
-TL;DR, a HTML decorator library
+TL;DR, an HTML decorator library
 
 Want to use JavaScript without writing it? Want your team to be able to use your BackboneJS or JavaScript components without manually initializing them? Well you and your team should use Dorsal!
 
@@ -106,20 +106,6 @@ Examples
 --------
 
 See it in action by opening `examples/lorem.html`. This use case automatically inserts Lorem ipsum wherever a `.js-d-lorem` class is used.
-
-Change Log
-----------
-
-## 0.4.0
-- Unwire
-- Rewire
-- Wire a specific plugin
-- Dorsal plugins will run asynchronously
-- Improved docs
-- Tidying up lots of code
-
-## 0.3.3
-- Initial release
 
 License
 -------
