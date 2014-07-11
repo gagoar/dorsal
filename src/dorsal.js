@@ -124,12 +124,12 @@ DorsalCore.prototype._wireElement = function(el, pluginName, deferred) {
 
         if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
             pluginResponse = self._runPlugin(el, pluginName);
-            deferred.notify(pluginResponse);
+            deferred.notify(pluginName, pluginResponse, self);
         }
 
         for (var elementIndex = 0, element; (element = elements[elementIndex]); elementIndex++) {
             pluginResponse = self._runPlugin(element, pluginName);
-            deferred.notify(pluginResponse);
+            deferred.notify(pluginName, pluginResponse, self);
         }
     }, 0);
 };
