@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Dorsal by Eventbrite</title>
+    <title>Dorsal by eventbrite</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -29,16 +29,20 @@
       </header>
       <section>
         <h1>
-<a name="dorsal-" class="anchor" href="#dorsal-"><span class="octicon octicon-link"></span></a>Dorsal</h1>
+<a name="dorsal" class="anchor" href="#dorsal"><span class="octicon octicon-link"></span></a>Dorsal</h1>
 
-<p><a href="https://travis-ci.org/eventbrite/dorsal"><img src="https://travis-ci.org/eventbrite/dorsal.svg" alt="Build Status"></a> <a href="http://badge.fury.io/js/dorsal"><img src="https://badge.fury.io/js/dorsal.svg" alt="NPM version"></a></p>
+<p><a href="https://travis-ci.org/eventbrite/dorsal"><img src="https://travis-ci.org/eventbrite/dorsal.svg" alt="Build Status"></a> <a href="http://badge.fury.io/js/dorsal"><img src="https://badge.fury.io/js/dorsal.svg" alt="NPM version"></a> <a href="https://codeclimate.com/github/eventbrite/dorsal"><img src="https://codeclimate.com/github/eventbrite/dorsal.png" alt="Code Climate"></a></p>
 
 <h2>
 <a name="what-is-it" class="anchor" href="#what-is-it"><span class="octicon octicon-link"></span></a>What is it?</h2>
 
-<p>TL;DR, a client-side JavaScript boilerplate automation system.</p>
+<p>TL;DR, an HTML decorator library</p>
 
-<p>Dorsal allows you to register your bespoke, artisinal, hand crafted plugins. It will then scour the DOM in search of your plugins and instantiate them. We were inspired by the directives system in Angular and wanted to bring something similar to our frontend stack. Dorsal, is platform agnostic, has no dependencies and is designed to work IE8+.</p>
+<p>Want to use JavaScript without writing it? Want your team to be able to use your BackboneJS or JavaScript components without manually initializing them? Well you and your team should use Dorsal!</p>
+
+<p>Dorsal swims around your DOM in search of HTML that's hungry for delicious, delicious JavaScript. Dorsal scoops up those DOM elements and wires them up just by applying one class to your HTML. We were inspired by the directives system in Angular and wanted to bring something similar to our frontend stack here at Eventbrite.</p>
+
+<p>Dorsal is platform agnostic, has no dependencies, and has been tested to work with IE8+, Firefox, Safari, and Chrome.</p>
 
 <h2>
 <a name="setup" class="anchor" href="#setup"><span class="octicon octicon-link"></span></a>Setup</h2>
@@ -91,6 +95,26 @@
     // if using jquery
     Dorsal.wire($('.js-d-other-plugin').get(0));
     Dorsal.wire($('.some-arbitrary-parent-selector').get(0));
+&lt;/script&gt;
+</code></pre>
+
+<h2>
+<a name="unwiringrewiring" class="anchor" href="#unwiringrewiring"><span class="octicon octicon-link"></span></a>Unwiring/Rewiring</h2>
+
+<p>Sometimes you'll want to rewire something if it changes dynamically and your plugin can't account for that. In that case, you should use rewire.</p>
+
+<pre><code>&lt;div class='js-lorem-1 js-d-lorem' data-xd-wired="lorem"&gt;Lorem yay&lt;/div&gt;
+
+&lt;div class='js-lorem-2 js-d-lorem' data-xd-wired="lorem"&gt;Lorem yay&lt;/div&gt;
+
+&lt;script&gt;
+    // disable the first lorem
+    Dorsal.unwire($('.js-lorem-1').get(0), 'lorem');
+
+    // change the type of the second lorem to bacon
+    $('.js-lorem-2').data('d-type', 'bacon');
+    // replaces lorem ipsum with bacon ipsum
+    Dorsal.rewire($('.js-lorem-2').get(0), 'lorem');
 &lt;/script&gt;
 </code></pre>
 
@@ -148,7 +172,7 @@ limitations under the License.</p>
 <p>See LICENSE.md.</p>
       </section>
       <footer>
-        <p>This project is maintained by <a href="https://github.com/eventbrite">Eventbrite</a></p>
+        <p>This project is maintained by <a href="https://github.com/eventbrite">eventbrite</a></p>
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
