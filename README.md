@@ -4,9 +4,11 @@ Dorsal
 What is it?
 -----------
 
-TL;DR, a client-side JavaScript boilerplate automation system.
+TL;DR, a HTML decorator library
 
-Dorsal allows you to register your bespoke. It will then scour the DOM in search of your plugins and instantiate them. We were inspired by the directives system in Angular and wanted to bring something similar to our frontend stack. Dorsal is platform agnostic, has no dependencies, and has been tested to work with IE8+, Firefox, Safari, and Chrome.
+Want to use JavaScript without writing it? Want your team to be able to use your BackboneJS or JavaScript components without manually initializing them? Well you and your team should use Dorsal!
+
+Dorsal swims around your DOM in search of HTML that's hungry for delicious, delicious JavaScript. Dorsal scoops up those DOM elements and wires them up just by applying 1 class to your HTML. We were inspired by the directives system in Angular and wanted to bring something similar to our frontend stack here at Eventbrite. Dorsal is platform agnostic, has no dependencies, and has been tested to work with IE8+, Firefox, Safari, and Chrome.
 
 ## Setup
 
@@ -55,6 +57,24 @@ You don't need to wire your whole page. `Dorsal.wire()` accepts an element as an
         Dorsal.wire($('.some-arbitrary-parent-selector').get(0));
     </script>
 
+## Unwiring/Rewiring
+
+Sometimes you'll want to rewire something if it changes dynamically and your plugin can't account for that. In that case, you should use rewire.
+
+    <div class='js-lorem-1 js-d-lorem' data-xd-wired="lorem">Lorem yay</div>
+
+    <div class='js-lorem-2 js-d-lorem' data-xd-wired="lorem">Lorem yay</div>
+
+    <script>
+        // disable the first lorem
+        Dorsal.unwire($('.js-lorem-1').get(0), 'lorem');
+
+        // change the type of the second lorem to bacon
+        $('.js-lorem-2').data('d-type', 'bacon');
+        // replaces lorem ipsum with bacon ipsum
+        Dorsal.rewire($('.js-lorem-2').get(0), 'lorem');
+    </script>
+
 ## Arguments and Data Attributes
 
 Sometimes you will want to pass options to your selectors. In such cases you can use data attributes.
@@ -87,6 +107,19 @@ Examples
 
 See it in action by opening `examples/lorem.html`. This use case automatically inserts Lorem ipsum wherever a `.js-d-lorem` class is used.
 
+Change Log
+----------
+
+## 0.4.0
+- Unwire
+- Rewire
+- Wire a specific plugin
+- Dorsal plugins will run asynchronously
+- Improved docs
+- Tidying up lots of code
+
+## 0.3.3
+- Initial release
 
 License
 -------
