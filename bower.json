@@ -1,0 +1,27 @@
+{
+  "name": "dorsal",
+  "version": "0.4.0",
+  "homepage": "http://eventbrite.github.io/dorsal/",
+  "authors": [
+    "Parris Khachi <parris@eventbrite.com>",
+    "Alex Roberts <alex@eventbrite.com>"
+  ],
+  "description": "an HTML Decorator Library",
+  "main": "dist/dorsal.js",
+  "keywords": [
+    "html",
+    "decorator",
+    "backbone",
+    "directives",
+    "declarative",
+    "components"
+  ],
+  "license": "Apache2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
