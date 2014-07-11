@@ -4,7 +4,7 @@ Dorsal
 What is it?
 -----------
 
-TL;DR, an HTML decorator library
+TL;DR: An HTML decorator library.
 
 Want to use JavaScript without writing it? Want your team to be able to use your BackboneJS or JavaScript components without manually initializing them? Well you and your team should use Dorsal!
 
@@ -14,7 +14,7 @@ Dorsal is platform agnostic, has no dependencies, and has been tested to work wi
 
 ## Setup
 
-Dorsal is agnostic to AMD, CommonJS and namespaces.
+Dorsal is compatible with AMD, CommonJS, and namespaces.
 
 - CommonJS/Node: `require('dorsal')`
 - AMD: `require('node_modules/dorsal/dist/dorsal')`
