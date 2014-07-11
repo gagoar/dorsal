@@ -8,7 +8,9 @@ TL;DR, an HTML decorator library
 
 Want to use JavaScript without writing it? Want your team to be able to use your BackboneJS or JavaScript components without manually initializing them? Well you and your team should use Dorsal!
 
-Dorsal swims around your DOM in search of HTML that's hungry for delicious, delicious JavaScript. Dorsal scoops up those DOM elements and wires them up just by applying 1 class to your HTML. We were inspired by the directives system in Angular and wanted to bring something similar to our frontend stack here at Eventbrite. Dorsal is platform agnostic, has no dependencies, and has been tested to work with IE8+, Firefox, Safari, and Chrome.
+Dorsal swims around your DOM in search of HTML that's hungry for delicious, delicious JavaScript. Dorsal scoops up those DOM elements and wires them up just by applying one class to your HTML. We were inspired by the directives system in Angular and wanted to bring something similar to our frontend stack here at Eventbrite.
+
+Dorsal is platform agnostic, has no dependencies, and has been tested to work with IE8+, Firefox, Safari, and Chrome.
 
 ## Setup
 
