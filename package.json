@@ -9,6 +9,7 @@
   },
   "main": "dist/dorsal.js",
   "scripts": {
+    "prepublish": "grunt",
     "test": "grunt test"
   },
   "keywords": [
