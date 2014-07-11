@@ -59,7 +59,7 @@ DorsalDeferred = function(dorsal) {
             length = progressFns.length;
 
         for (i = 0; i < length; i++) {
-            progressFns[i].call(dfd, dorsal);
+            progressFns[i].apply(dfd, arguments);
         }
     };
 

@@ -119,16 +119,17 @@ DorsalCore.prototype._wireElement = function(el, pluginName, deferred) {
     var self = this;
     window.setTimeout(function() {
         var pluginCSSClass = self.CSS_PREFIX + pluginName,
-            elements = el.querySelectorAll(pluginCSSClass);
+            elements = el.querySelectorAll(pluginCSSClass),
+            pluginResponse;
 
         if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
-            self._runPlugin(el, pluginName);
-            deferred.notify();
+            pluginResponse = self._runPlugin(el, pluginName);
+            deferred.notify(pluginResponse);
         }
 
         for (var elementIndex = 0, element; (element = elements[elementIndex]); elementIndex++) {
-            self._runPlugin(element, pluginName);
-            deferred.notify();
+            pluginResponse = self._runPlugin(element, pluginName);
+            deferred.notify(pluginResponse);
         }
     }, 0);
 };

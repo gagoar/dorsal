@@ -112,7 +112,7 @@ describe("DorsalDeferred", function() {
             this.progressStub = sinon.stub();
             this.promise.progress(this.progressStub);
 
-            this.deferred.notify();
+            this.deferred.notify(this.dorsal);
         });
 
         it('triggers progress functions', function() {
