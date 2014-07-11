@@ -153,6 +153,10 @@
             this.clock.tick(10);
         });
 
+        it('does not explode when unwiring an unwired element', function() {
+            expect(this.dorsal.unwire($('<div>').get(0), 'pizza')).toBeFalsy();
+        });
+
         it('attaches multiple plugins to an element', function() {
             expect(this.$html.data('xdWired').indexOf('hello') > -1).toBeTruthy();
             expect(this.$html.data('xdWired').indexOf('world') > -1).toBeTruthy();

@@ -165,6 +165,10 @@ DorsalCore.prototype._detachPlugin = function(el, pluginName) {
     var remainingPlugins,
         hasActuallyDestroyed = false;
 
+    if (typeof el.getAttribute(this.DATA_DORSAL_WIRED) !== 'string') {
+        return false;
+    }
+
     if (el.getAttribute(this.DATA_DORSAL_WIRED).indexOf(pluginName) > -1 &&
         this.plugins[pluginName].destroy) {
 
