@@ -102,7 +102,8 @@ module.exports = function(grunt) {
                     ],
                     helpers: [
                         'node_modules/jasmine-jquery/lib/jasmine-jquery.js',
-                        'node_modules/sinon/pkg/sinon-1.10.2.js'
+                        'node_modules/sinon/pkg/sinon-1.10.2.js',
+                        'node_modules/jasmine-sinon/lib/jasmine-sinon.js'
                     ]
                 }
             }

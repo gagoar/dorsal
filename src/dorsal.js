@@ -191,6 +191,8 @@ DorsalCore.prototype.unwire = function(el, pluginName) {
 };
 
 DorsalCore.prototype.wire = function(el, pluginName) {
+    var deferred = new DorsalDeferred();
+
     if (!this.plugins) {
         throw new Error('No plugins registered with Dorsal');
     }
@@ -208,6 +210,8 @@ DorsalCore.prototype.wire = function(el, pluginName) {
     for (; index < length; index++) {
         this._wireElement(el, pluginKeys[index]);
     }
+
+    return deferred.promise();
 };
 
 DorsalCore.prototype.rewire = function(el, pluginName) {
