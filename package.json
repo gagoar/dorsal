@@ -10,8 +10,8 @@
   "main": "dist/dorsal.js",
   "scripts": {
     "prepublish": "grunt",
-    "test": "grunt test"
-    "pushsite": "scripts/pushsite"
+    "test": "grunt test",
+    "pushsite": "tasks/pushsite.js"
   },
   "keywords": [
     "html",
@@ -60,6 +60,9 @@
     "jasmine-jquery": "git://github.com/velesin/jasmine-jquery.git#584922d11787aaeeb1d2c4bd9b1b51a8fc08896d",
     "jasmine-sinon": "^0.4.0",
     "jquery": "^2.1.1",
-    "sinon": "^1.10.2"
+    "sinon": "^1.10.2",
+    "minimist": "~0.2.0",
+    "gift": "~0.4.2",
+    "shelljs": "~0.3.0"
   }
 }
