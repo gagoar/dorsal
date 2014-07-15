@@ -11,7 +11,7 @@
   "scripts": {
     "prepublish": "grunt",
     "test": "grunt test",
-    "pushsite": "tasks/pushsite.js"
+    "push-site": "grunt push-site"
   },
   "keywords": [
     "html",
