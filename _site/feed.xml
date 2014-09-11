@@ -3,11 +3,11 @@
   <channel>
     <title>Dorsal</title>
     <description>A client-side JavaScript boilerplate automation system</description>
-    <link>https://eventbrite.github.io/dorsal/</link>
-    <atom:link href="https://eventbrite.github.io/dorsal/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 12 Jul 2014 20:50:51 -0300</pubDate>
-    <lastBuildDate>Sat, 12 Jul 2014 20:50:51 -0300</lastBuildDate>
-    <generator>Jekyll v2.1.1</generator>
+    <link>https://eventbrite.github.io/dorsal/dorsal/</link>
+    <atom:link href="https://eventbrite.github.io/dorsal/dorsal/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Thu, 11 Sep 2014 14:25:01 -0300</pubDate>
+    <lastBuildDate>Thu, 11 Sep 2014 14:25:01 -0300</lastBuildDate>
+    <generator>Jekyll v2.4.0</generator>
     
   </channel>
 </rss>

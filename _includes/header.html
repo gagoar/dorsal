@@ -1,6 +1,8 @@
 <header>
-  <h1>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</h1>
-  <p>{{ site.description }}</p>
+    <img alt="dorsal" src="{{ "/images/dorsal.png" | prepend: site.baseurl }}">
+    <p>{{ site.description }}</p>
+
+
 
   <p class="view"><a href="{{ site.repo }}">View the Project on GitHub <small>eventbrite/dorsal</small></a></p>
 
@@ -10,4 +12,5 @@
     <li><a href="{{ "/tarball/master" | prepend: site.repo }}">Download <strong>TAR Ball</strong></a></li>
     <li><a href="{{ site.repo }}">View On <strong>GitHub</strong></a></li>
   </ul>
+
 </header>
