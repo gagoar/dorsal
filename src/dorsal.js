@@ -119,9 +119,15 @@ DorsalCore.prototype._wireElement = function(el, pluginName, deferred) {
     var self = this;
     window.setTimeout(function() {
         var pluginCSSClass = self.CSS_PREFIX + pluginName,
-            elements = el.querySelectorAll(pluginCSSClass),
+            elIsValid = el !== undefined && el.querySelectorAll,
+            elements,
             pluginResponse;
 
+        if (elIsValid) {
+            elements = el.querySelectorAll(pluginCSSClass);
+        } else {
+            return;
+        }
         if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
             pluginResponse = self._runPlugin(el, pluginName);
             deferred.notify(pluginName, pluginResponse, self);
