@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*! dorsal - v0.4.0 - 2014-10-01 */
+/*! dorsal - v0.4.0 - 2014-10-07 */
 
 (function(root, factory) {
     if(typeof exports === 'object') {
@@ -118,6 +118,12 @@ DorsalCore.prototype._getDataAttributes = function(el) {
     return dataAttributes;
 };
 
+/**
+ * _getAttributes
+ *
+ * @param {DOMNode} el
+ * @returns {Object} all the data- attributes present in the given element
+ */
 DorsalCore.prototype._getAttributes = function(el) {
     if (el.dataset) {
         return this._getDatasetAttributes(el);
@@ -217,9 +223,10 @@ DorsalCore.prototype._detachPlugin = function(el, pluginName) {
 };
 
 /**
- * @param el [DOMNode]
- * @param pluginName [String]
- * @return true if a plugin was detached, false otherwise
+ * unwire
+ * @param {DOMNode} el
+ * @param {String} pluginName
+ * @returns {Boolean} true if a plugin was detached, false otherwise
  */
 DorsalCore.prototype.unwire = function(el, pluginName) {
     // detach a single plugin
@@ -244,6 +251,13 @@ DorsalCore.prototype.unwire = function(el, pluginName) {
     return hasADetachedPlugin;
 };
 
+/**
+ * wire
+ *
+ * @param {DOMNode} el
+ * @param {String} pluginName
+ * @returns {Promise} deferred async wiring of dorsal
+ */
 DorsalCore.prototype.wire = function(el, pluginName) {
     var deferred = new DorsalDeferred(this),
         pluginKeys = Object.keys(this.plugins),
@@ -277,9 +291,59 @@ DorsalCore.prototype.wire = function(el, pluginName) {
     return deferred.promise();
 };
 
+/**
+ * rewire
+ *
+ * @param {DOMNode} el
+ * @param {stirng} pluginName
+ * @returns {Promise} deferred async wiring of dorsal
+ */
 DorsalCore.prototype.rewire = function(el, pluginName) {
     this.unwire(el, pluginName);
     return this.wire(el, pluginName);
+};
+
+/**
+ * get
+ *
+ * @param {Array} nodes DomNodes given
+ * @returns {Array} all object instances stored for given element/s
+ */
+DorsalCore.prototype.get = function(nodes) {
+    var isArray = nodes instanceof Array,
+        i = 0,
+        instances = [],
+        instance,
+        node;
+
+    if (!isArray) {
+        nodes = [nodes];
+    }
+    for (;(node = nodes[i++]);) {
+        instance = this._instancesFor(node);
+        if (instance) {
+            instances.push(instance);
+        }
+    }
+    return instances;
+};
+
+/**
+ * _instancesFor
+ *
+ * @param {DomNode} el DomNodes given
+ * @returns {Object} all instances stored for a particular element
+*/
+
+DorsalCore.prototype._instancesFor = function(el) {
+    if (el && typeof(el.getAttribute) === 'function') {
+
+        var elementGUID = el.getAttribute(this.GUID_KEY);
+
+        if (elementGUID) {
+            return this.ELEMENT_TO_PLUGINS_MAP[elementGUID];
+        }
+    }
 };
 
 var Dorsal = new DorsalCore();
