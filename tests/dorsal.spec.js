@@ -248,6 +248,79 @@
 
         });
 
+        describe('returning instances wired to several elements', function() {
+
+            beforeEach(function() {
+
+                this.$html = $('<div class="js-d-hello"></div>');
+                this.$other = $('<div class="js-d-replace"></div>');
+                this.dorsal.registerPlugin('replace', {
+                    create: function(options) {
+                       var $el = $(options.el),
+                           addContent = 'some content';
+
+                        $el.text(addContent);
+
+                        return { content: addContent };
+                    },
+                    destroy: function(options) {
+
+                        options.el.textContent = '';
+                    }
+                });
+
+                this.dorsal.wire(this.$html.get(0));
+                this.dorsal.wire(this.$other.get(0));
+
+                this.clock.tick(10);
+            });
+
+            it('should return all the wired instances in given elements', function() {
+
+                var instances = this.dorsal.get([this.$html.get(0), this.$other.get(0)]);
+
+                expect(instances.length).toBe(2);
+                expect(instances[1].replace.content === 'some content').toBeTruthy();
+            });
+
+        });
+
+        describe('returning instances wired to a given element', function() {
+
+            beforeEach(function() {
+
+                this.$html = $('<div class="js-d-replace js-d-hello"></div>');
+
+                this.dorsal.registerPlugin('replace', {
+                    create: function(options) {
+                       var $el = $(options.el),
+                           addContent = 'some content';
+
+                        $el.text(addContent);
+
+                        return { content: addContent };
+                    },
+                    destroy: function(options) {
+
+                        options.el.textContent = '';
+                    }
+                });
+
+                this.dorsal.wire(this.$html.get(0));
+
+                this.clock.tick(10);
+            });
+
+            it('should return all the wired instances in that element', function() {
+
+                var instances = this.dorsal._instancesFor(this.$html.get(0));
+
+                expect(Object.keys(instances).length).toBe(2);
+                expect(instances.replace.content === 'some content').toBeTruthy();
+            });
+
+        });
+
         describe('wiring just the pizza plugin', function() {
 
             beforeEach(function() {
