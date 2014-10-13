@@ -54,6 +54,12 @@ DorsalCore.prototype._normalizeDataAttribute =  function(attr) {
     return attr.toUpperCase().replace('-','');
 };
 
+/**
+ * _getDataAttributes
+ *
+ * @param {DOMNode} el
+ * @returns {Object} all the data- attributes present in the given element
+ */
 DorsalCore.prototype._getDataAttributes = function(el) {
     var dataAttributes = {},
         attributes = el.attributes,
@@ -121,31 +127,107 @@ DorsalCore.prototype._runPlugin = function(el, pluginName) {
     }
 };
 
-DorsalCore.prototype._wireElement = function(el, pluginName, deferred) {
+/**
+ * registeredPlugins
+ *
+ * @returns {Array} registered plugin names
+ */
+DorsalCore.prototype.registeredPlugins = function() {
+    return Object.keys(this.plugins);
+};
+
+/**
+ * wireElementsFrom
+ * @param {DOMNode} parentNode
+ * @param {Promise} deferred object to proxy to the next method
+ *
+ */
+DorsalCore.prototype._wireElementsFrom = function(parentNode, deferred) {
+    var isValidNode = parentNode && 'querySelectorAll' in parentNode,
+        plugins = this.registeredPlugins(),
+        index = 0,
+        pluginName,
+        pluginCSSClass,
+        nodes;
+
+    if (!isValidNode) {
+        return;
+    }
+
+    pluginName = plugins[index++];
+
+    while(pluginName) {
+        nodes = parentNode.querySelectorAll(this.CSS_PREFIX + pluginName);
+
+        if (nodes.length) {
+            this._wireElements(nodes, [pluginName], deferred);
+        }
+        pluginName = plugins[index++];
+    }
+};
+
+/**
+ * _wireElements
+ * @param {Array} nodes DomNodes to wire
+ * @param {Array|String} plugins plugins to wire the given nodes.
+ * @param {Promise} deferred object to proxy to the next method
+ *
+ */
+DorsalCore.prototype._wireElements = function(nodes, plugins, deferred) {
+    var nodeIndex = 0,
+        node = nodes[nodeIndex++];
+
+    while(node) {
+        this._wireElement(node, plugins, deferred);
+        node = nodes[nodeIndex++];
+    }
+};
+/**
+ * _wireElement
+ * @param {DomNode} nodes DomNodes to wire
+ * @param {Array|String} plugins plugins to wire the given nodes.
+ * @param {Promise} deferred object to proxy to the next method
+ *
+ */
+DorsalCore.prototype._wireElement = function(el, plugins, deferred) {
     var self = this;
     window.setTimeout(function() {
-        var pluginCSSClass = self.CSS_PREFIX + pluginName,
-            elIsValid = el !== undefined && el.querySelectorAll,
-            elements,
-            pluginResponse;
+        var validElement = el && 'className' in el,
+            pluginCSSClass,
+            pluginName,
+            index = 0;
 
-        if (elIsValid) {
-            elements = el.querySelectorAll(pluginCSSClass);
-        } else {
+        if (!validElement) {
             return;
         }
-        if (el !== document && el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
-            pluginResponse = self._runPlugin(el, pluginName);
-            deferred.notify(pluginName, pluginResponse, self);
+
+        if (!plugins.length) {
+            plugins = self.registeredPlugins();
         }
 
-        for (var elementIndex = 0, element; (element = elements[elementIndex]); elementIndex++) {
-            pluginResponse = self._runPlugin(element, pluginName);
-            deferred.notify(pluginName, pluginResponse, self);
+        pluginName = plugins[index++];
+
+        while(pluginName) {
+            pluginCSSClass = self.CSS_PREFIX + pluginName;
+
+            if (el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
+                pluginResponse = self._runPlugin(el, pluginName);
+                deferred.notify(pluginName, pluginResponse, self);
+            }
+            pluginName = plugins[index++];
         }
+
+
     }, 0);
 };
 
+/**
+ * _detachPlugin
+ * @param {DomNode} nodes DomNodes to unwire
+ * @param {String} pluginName plugin to unwire from  the given node.
+ * @param {Boolean} hasActuallyDestroyed the unwire status
+ *
+ */
 DorsalCore.prototype._detachPlugin = function(el, pluginName) {
     var remainingPlugins,
         hasActuallyDestroyed = false;
@@ -208,6 +290,12 @@ DorsalCore.prototype.unwire = function(el, pluginName) {
 
 /**
  * wire
+ * wire can be used as follow:
+ * 0 argument: Will wire each element having the prefix on them.
+ * 1 argument (DomNode): Will wire all the children elements from a given node.
+ * 1 argument (Array): Will wire all the elements from a given Collection.
+ * 2 argument (DomNode, PluginName): Will wire the node/plugin respectively.
+ *
  *
  * @param {DOMNode} el
  * @param {String} pluginName
@@ -215,9 +303,10 @@ DorsalCore.prototype.unwire = function(el, pluginName) {
  */
 DorsalCore.prototype.wire = function(el, pluginName) {
     var deferred = new DorsalDeferred(this),
-        pluginKeys = Object.keys(this.plugins),
+        pluginKeys = this.registeredPlugins(),
         pluginCount = (pluginName !== undefined) ? 1 : pluginKeys.length,
-        pluginsCalled = 0;
+        pluginsCalled = 0,
+        action;
 
     deferred.promise().progress(function() {
         pluginsCalled++;
@@ -230,17 +319,26 @@ DorsalCore.prototype.wire = function(el, pluginName) {
         throw new Error('No plugins registered with Dorsal');
     }
 
-    if (pluginName) {
-        this._wireElement(el, [pluginName], deferred);
-        return deferred.promise();
-    }
+    switch(arguments.length) {
+        case 1:
+            // if el is Array we wire those given elements
+            // otherwise we query elements inside the given element
+            if (isHTMLElement(el)) {
+                this._wireElementsFrom(el, deferred);
+            } else {
+                this._wireElements(el, [], deferred);
+            }
+            break;
+        case 2:
+            // wiring element/plugin respectively.
+            action = isHTMLElement(el) ? '_wireElement' : '_wireElements';
 
-    var index = 0,
-        length = pluginKeys.length,
-        el = el || document;
-
-    for (; index < length; index++) {
-        this._wireElement(el, pluginKeys[index], deferred);
+            this[action](el, [pluginName], deferred);
+            break;
+        default:
+            // without arguments, we define document as our parentElement
+            this._wireElementsFrom(document, deferred);
+            break;
     }
 
     return deferred.promise();
@@ -254,8 +352,19 @@ DorsalCore.prototype.wire = function(el, pluginName) {
  * @returns {Promise} deferred async wiring of dorsal
  */
 DorsalCore.prototype.rewire = function(el, pluginName) {
+    var deferred;
+
     this.unwire(el, pluginName);
-    return this.wire(el, pluginName);
+
+    if (!pluginName) {
+        el  = [el];
+
+        deferred = this.wire(el);
+    } else {
+        deferred = this.wire(el, pluginName);
+    }
+
+    return deferred;
 };
 
 /**
@@ -265,21 +374,26 @@ DorsalCore.prototype.rewire = function(el, pluginName) {
  * @returns {Array} all object instances stored for given element/s
  */
 DorsalCore.prototype.get = function(nodes) {
-    var isArray = nodes instanceof Array,
-        i = 0,
-        instances = [],
+    var instances = [],
         instance,
+        i = 0,
         node;
 
-    if (!isArray) {
+    if (isHTMLElement(nodes)) {
         nodes = [nodes];
     }
-    for (;(node = nodes[i++]);) {
+
+    node = nodes[i++];
+
+    while(node) {
         instance = this._instancesFor(node);
         if (instance) {
             instances.push(instance);
         }
+
+        node = nodes[i++];
     }
+
     return instances;
 };
 

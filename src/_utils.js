@@ -26,6 +26,10 @@ var createGUID = (function() {
     };
 })();
 
+function isHTMLElement(node) {
+    return node.nodeType === 1;
+}
+
 function arrayIndexOf(arr, value) {
     var lengthOfArr = arr.length,
         i = 0;

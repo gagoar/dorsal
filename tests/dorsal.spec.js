@@ -102,11 +102,29 @@
             });
         });
 
+        describe('after initial wire with 2 elements', function() {
+
+            beforeEach(function() {
+                this.$el1 = $(this.html);
+                this.$el2 = $(this.html);
+                this.dorsal.wire([this.$el1.get(0), this.$el2.get(0)]);
+                this.clock.tick(10);
+            });
+
+            it('runs the test plugin on a DOM node', function() {
+                expect(this.$el1).toHaveHtml('hello, world');
+            });
+
+            it('has a dorsal guid', function() {
+                expect(this.$el2.attr('dorsal-guid')).toBeTruthy();
+            });
+
+        });
         describe('after initial wire', function() {
 
             beforeEach(function() {
                 this.$el = $(this.html);
-                this.dorsal.wire(this.$el.get(0));
+                this.dorsal.wire(this.$el);
                 this.clock.tick(10);
             });
 
@@ -187,7 +205,7 @@
             });
 
             this.$html = $('<div class="js-d-hello js-d-world" data-d-h="hello" data-d-w="world"></div>');
-            this.dorsal.wire(this.$html.get(0));
+            this.dorsal.wire(this.$html);
             this.clock.tick(10);
         });
 
@@ -269,8 +287,8 @@
                     }
                 });
 
-                this.dorsal.wire(this.$html.get(0));
-                this.dorsal.wire(this.$other.get(0));
+                this.dorsal.wire(this.$html);
+                this.dorsal.wire(this.$other);
 
                 this.clock.tick(10);
             });
@@ -306,7 +324,7 @@
                     }
                 });
 
-                this.dorsal.wire(this.$html.get(0));
+                this.dorsal.wire(this.$html);
 
                 this.clock.tick(10);
             });
