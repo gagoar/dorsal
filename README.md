@@ -1,6 +1,7 @@
 Dorsal
 ======
 [![Build Status](https://travis-ci.org/eventbrite/dorsal.svg)](https://travis-ci.org/eventbrite/dorsal) [![NPM version](https://badge.fury.io/js/dorsal.svg)](http://badge.fury.io/js/dorsal) [![Code Climate](https://codeclimate.com/github/eventbrite/dorsal.png)](https://codeclimate.com/github/eventbrite/dorsal)
+
 What is it?
 -----------
 
@@ -108,17 +109,23 @@ Sometimes you will want to pass options to your selectors. In such cases you can
     ></div>
 
     <script>
-        Dorsal.registerPlugin('hello-world', function(options) {
-            console.log(options.data.nonStandardHelloVariant); // bacon
-
-            var helloMap = [
-                    bacon: 'Bacon world',
-                    default: 'Hello world'
-                ],
-                variant = options.nonStandardHelloVariant || 'default',
-                prefix = options.data.prefix || '';
-
-            options.el.innerHTML = prefix + helloMap[variant];
+        Dorsal.registerPlugin('hello-world', {
+            create: function(options) {
+                console.log(options.data.nonStandardHelloVariant); // bacon
+    
+                var helloMap = [
+                        bacon: 'Bacon world',
+                        default: 'Hello world'
+                    ],
+                    variant = options.nonStandardHelloVariant || 'default',
+                    prefix = options.data.prefix || '';
+    
+                options.el.innerHTML = prefix + helloMap[variant];
+                return el;
+            },
+            destroy: function(options) {
+                options.instance.innerHTML = '';
+            }
         });
 
         Dorsal.wire()
