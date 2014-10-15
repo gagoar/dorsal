@@ -1,7 +1,7 @@
 Dorsal
 ======
-[![Build Status](https://travis-ci.org/eventbrite/dorsal.svg)](https://travis-ci.org/eventbrite/dorsal) [![NPM version](https://badge.fury.io/js/dorsal.svg)](http://badge.fury.io/js/dorsal) [![Code Climate](https://codeclimate.com/github/eventbrite/dorsal.png)](https://codeclimate.com/github/eventbrite/dorsal)
 
+[![Build Status](https://travis-ci.org/eventbrite/dorsal.svg)](https://travis-ci.org/eventbrite/dorsal) [![NPM version](https://badge.fury.io/js/dorsal.svg)](http://badge.fury.io/js/dorsal) [![Code Climate](https://codeclimate.com/github/eventbrite/dorsal.png)](https://codeclimate.com/github/eventbrite/dorsal)
 
 What is it?
 -----------
@@ -34,10 +34,16 @@ The following is an example of a plugin and its usage. We define a Dorsal plugin
     <div class='js-d-hello-world'></div>
 
     <script>
-        Dorsal.registerPlugin('hello-world', function(options) {
-            console.log(this === options.el); // true
+        Dorsal.registerPlugin('hello-world', {
+            create: function(options) {
+                console.log(this === options.el); // true
+                options.el.innerHTML = 'Hello World';
 
-            options.el.innerHTML = 'Hello World';
+                return options.el;
+            },
+            destory: function(options) {
+                options.instance.innerHTML = '';
+            }
         });
 
         Dorsal.wire()
