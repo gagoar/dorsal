@@ -337,7 +337,7 @@
                 this.clock.tick(10);
             });
 
-            it('should return all the wired instances in that element', function() {
+            it('should return all the wired instances in by element', function() {
 
                 var instances = this.dorsal._instancesFor(this.$html.get(0));
 
@@ -345,6 +345,14 @@
                 expect(instances.replace.content === 'some content').toBeTruthy();
             });
 
+            it('should return all the wired instances in by guid', function() {
+
+                var guid = this.$html.attr('dorsal-guid');
+                var instances = this.dorsal._instancesFor(guid);
+
+                expect(Object.keys(instances).length).toBe(2);
+                expect(instances.replace.content === 'some content').toBeTruthy();
+            });
         });
 
         describe('wiring just the pizza plugin', function() {

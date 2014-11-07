@@ -405,14 +405,12 @@ DorsalCore.prototype.get = function(nodes) {
 */
 
 DorsalCore.prototype._instancesFor = function(el) {
-    if (el && typeof(el.getAttribute) === 'function') {
 
-        var elementGUID = el.getAttribute(this.GUID_KEY);
+    var elementGUID = isHTMLElement(el) ?
+            el.getAttribute(this.GUID_KEY)
+            : el;
 
-        if (elementGUID) {
-            return this.ELEMENT_TO_PLUGINS_MAP[elementGUID];
-        }
-    }
+    return this.ELEMENT_TO_PLUGINS_MAP[elementGUID];
 };
 
 var Dorsal = new DorsalCore();
