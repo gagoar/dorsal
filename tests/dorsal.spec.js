@@ -83,6 +83,14 @@
             expect(this.dorsalDoneStub).toHaveBeenCalledOnce();
         });
 
+        it('triggers deferred done with the wired instances', function() {
+            var $el = $('.js-d-test'),
+                guid = $el.attr('dorsal-guid'),
+                calledWith = this.dorsalDoneStub.args[0][0];
+
+            expect(guid in calledWith).toBeTruthy();
+        });
+
         describe('after initial wire without a valid element', function() {
 
             beforeEach(function() {

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-DorsalDeferred = function(dorsal) {
+DorsalDeferred = function(instances) {
     var status = 'pending',
         doneFns = [],
         failFns = [],
@@ -27,7 +27,7 @@ DorsalDeferred = function(dorsal) {
         },
         done: function(fn) {
             if (status === 'resolved') {
-                fn.call(dfd, dorsal);
+                fn.call(dfd, instances);
             }
 
             doneFns.push(fn);
@@ -36,7 +36,7 @@ DorsalDeferred = function(dorsal) {
         },
         fail: function(fn) {
             if (status === 'rejected') {
-                fn.call(dfd, dorsal);
+                fn.call(dfd, instances);
             }
 
             failFns.push(fn);
@@ -70,7 +70,7 @@ DorsalDeferred = function(dorsal) {
         status = 'rejected';
 
         for (i = 0; i < length; i++) {
-            failFns[i].call(dfd, dorsal);
+            failFns[i].call(dfd, instances);
         }
     };
 
@@ -81,7 +81,7 @@ DorsalDeferred = function(dorsal) {
         status = 'resolved';
 
         for (i = 0; i < length; i++) {
-            doneFns[i].call(dfd, dorsal);
+            doneFns[i].call(dfd, instances);
         }
     };
 

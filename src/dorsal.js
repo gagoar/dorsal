@@ -302,7 +302,7 @@ DorsalCore.prototype.unwire = function(el, pluginName) {
  * @returns {Promise} deferred async wiring of dorsal
  */
 DorsalCore.prototype.wire = function(el, pluginName) {
-    var deferred = new DorsalDeferred(this),
+    var deferred = new DorsalDeferred(this.ELEMENT_TO_PLUGINS_MAP),
         pluginKeys = this.registeredPlugins(),
         pluginCount = (pluginName !== undefined) ? 1 : pluginKeys.length,
         pluginsCalled = 0,
