@@ -15,13 +15,13 @@
 
 describe("DorsalDeferred", function() {
     beforeEach(function() {
-        this.dorsal = { dorsal: true };
+        this.instances = { instances: true };
         this.doneStub = sinon.stub();
         this.doneStub2 = sinon.stub();
         this.failStub = sinon.stub();
         this.failStub2 = sinon.stub();
 
-        this.deferred = new DorsalDeferred(this.dorsal);
+        this.deferred = new DorsalDeferred(this.instances);
         this.promise = this.deferred.promise();
     });
 
@@ -51,7 +51,7 @@ describe("DorsalDeferred", function() {
         });
 
         it('calls the done function with the dorsal object', function() {
-            expect(this.doneStub).toHaveBeenCalledWith(this.dorsal);
+            expect(this.doneStub).toHaveBeenCalledWith(this.instances);
         });
 
         it('does not trigger fail functions', function() {
@@ -87,7 +87,7 @@ describe("DorsalDeferred", function() {
         });
 
         it('calls the fail function with the dorsal object', function() {
-            expect(this.failStub).toHaveBeenCalledWith(this.dorsal);
+            expect(this.failStub).toHaveBeenCalledWith(this.instances);
         });
 
         it('does not trigger done functions', function() {
@@ -112,7 +112,7 @@ describe("DorsalDeferred", function() {
             this.progressStub = sinon.stub();
             this.promise.progress(this.progressStub);
 
-            this.deferred.notify(this.dorsal);
+            this.deferred.notify(this.instances);
         });
 
         it('triggers progress functions', function() {
@@ -120,7 +120,7 @@ describe("DorsalDeferred", function() {
         });
 
         it('calls the progress function with the dorsal object', function() {
-            expect(this.progressStub).toHaveBeenCalledWith(this.dorsal);
+            expect(this.progressStub).toHaveBeenCalledWith(this.instances);
         });
     });
 });
