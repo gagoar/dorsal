@@ -15,6 +15,16 @@
 
 var DorsalCore = function() {};
 
+/**
+* @namespace Dorsal
+*
+* @property {string}            Dorsal.VERSION           - current Version
+* @property {DATA_PREFIX}       Dorsal.DATA_PREFIX       - prefix for attributes used by Dorsal
+* @property {DATA_DORSAL_WIRED} Dorsal.DATA_DORSAL_WIRED - data attribute used for internal management
+* @property {GUID_KEY}          Dorsal.GUID_KEY          - data attribute added to each element wired
+* @property {CSS_PREFIX}        Dorsal.CSS_PREFIX        - prefix for any wirable pluginName
+*/
+
 DorsalCore.prototype.VERSION = '0.4.0';
 DorsalCore.prototype.CSS_PREFIX = '.js-d-';
 DorsalCore.prototype.DATA_IGNORE_PREFIX = 'xd';
@@ -30,6 +40,11 @@ DorsalCore.prototype.registerPlugin = function(pluginName, callback) {
     this.plugins[pluginName] = callback;
 };
 
+/**
+* @function Dorsal.unregisterPlugin
+* @description unregister a given plugin
+* @param {string} pluginName Plugin Name
+*/
 DorsalCore.prototype.unregisterPlugin = function(pluginName) {
     delete this.plugins[pluginName];
 };
@@ -55,10 +70,11 @@ DorsalCore.prototype._normalizeDataAttribute =  function(attr) {
 };
 
 /**
- * _getDataAttributes
  *
- * @param {DOMNode} el
- * @returns {Object} all the data- attributes present in the given element
+ * @function Dorsal._getDataAttributes
+ * @param {DomNode} el
+ * @return {Object} all the data attributes present in a given node
+ * @private
  */
 DorsalCore.prototype._getDataAttributes = function(el) {
     var dataAttributes = {},
@@ -80,10 +96,10 @@ DorsalCore.prototype._getDataAttributes = function(el) {
 };
 
 /**
- * _getAttributes
- *
- * @param {DOMNode} el
- * @returns {Object} all the data- attributes present in the given element
+ * @function Dorsal._getAttributes
+ * @param {DomNode} el
+ * @returns {Object} all the data attributes present in the given node
+ * @private
  */
 DorsalCore.prototype._getAttributes = function(el) {
     if (el.dataset) {
@@ -128,19 +144,19 @@ DorsalCore.prototype._runPlugin = function(el, pluginName) {
 };
 
 /**
- * registeredPlugins
- *
- * @returns {Array} registered plugin names
+ * @function Dorsal.registeredPlugins
+ * @description will return each plugin name registered
+ * @return {Array} registered plugin names
  */
 DorsalCore.prototype.registeredPlugins = function() {
     return Object.keys(this.plugins);
 };
 
 /**
- * wireElementsFrom
- * @param {DOMNode} parentNode
+ * @function Dorsal._wireElementsFrom
+ * @param {DomNode} parentNode
  * @param {Promise} deferred object to proxy to the next method
- *
+ * @private
  */
 DorsalCore.prototype._wireElementsFrom = function(parentNode, deferred) {
     var isValidNode = parentNode && 'querySelectorAll' in parentNode,
@@ -167,11 +183,11 @@ DorsalCore.prototype._wireElementsFrom = function(parentNode, deferred) {
 };
 
 /**
- * _wireElements
- * @param {Array} nodes DomNodes to wire
+ * @function Dorsal._wireElements
+ * @param {DomNode[]} nodes dom nodes to wire
  * @param {Array|String} plugins plugins to wire the given nodes.
  * @param {Promise} deferred object to proxy to the next method
- *
+ * @private
  */
 DorsalCore.prototype._wireElements = function(nodes, plugins, deferred) {
     var nodeIndex = 0,
@@ -183,11 +199,11 @@ DorsalCore.prototype._wireElements = function(nodes, plugins, deferred) {
     }
 };
 /**
- * _wireElement
+ * @function Dorsal._wireElement
  * @param {DomNode} nodes DomNodes to wire
- * @param {Array|String} plugins plugins to wire the given nodes.
+ * @param {String|Array} plugins plugins to wire the given nodes.
  * @param {Promise} deferred object to proxy to the next method
- *
+ * @private
  */
 DorsalCore.prototype._wireElement = function(el, plugins, deferred) {
     var self = this;
@@ -222,11 +238,11 @@ DorsalCore.prototype._wireElement = function(el, plugins, deferred) {
 };
 
 /**
- * _detachPlugin
- * @param {DomNode} nodes DomNodes to unwire
+ * @function Dorsal._detachPlugin
+ * @param {DomNode} el DomNode to unwire
  * @param {String} pluginName plugin to unwire from  the given node.
  * @param {Boolean} hasActuallyDestroyed the unwire status
- *
+ * @private
  */
 DorsalCore.prototype._detachPlugin = function(el, pluginName) {
     var remainingPlugins,
@@ -260,10 +276,11 @@ DorsalCore.prototype._detachPlugin = function(el, pluginName) {
 };
 
 /**
- * unwire
- * @param {DOMNode} el
- * @param {String} pluginName
- * @returns {Boolean} true if a plugin was detached, false otherwise
+ * @function Dorsal.unwire
+ * @description will remove a given el/pluginName
+ * @param {DomNode} el node already wired.
+ * @param {String} pluginName plugin Name to uwire.
+ * @return {Boolean} true if a plugin was detached, false otherwise
  */
 DorsalCore.prototype.unwire = function(el, pluginName) {
     // detach a single plugin
@@ -289,17 +306,19 @@ DorsalCore.prototype.unwire = function(el, pluginName) {
 };
 
 /**
- * wire
- * wire can be used as follow:
- * 0 argument: Will wire each element having the prefix on them.
- * 1 argument (DomNode): Will wire all the children elements from a given node.
- * 1 argument (Array): Will wire all the elements from a given Collection.
- * 2 argument (DomNode, PluginName): Will wire the node/plugin respectively.
+ * @function Dorsal.wire
+ * @description wire node/nodes
+ * wire can be used as follow:<br>
+ *
+ *  - 0 argument: Will wire each element having the prefix on them.<br>
+ *  - 1 argument (node): Will wire all the children elements from a given node.<br>
+ *  - 1 argument (Array): Will wire all the elements from a given Collection.<br>
+ *  - 2 argument (DomNode, PluginName): Will wire the node/plugin respectively.<br>
  *
  *
- * @param {DOMNode} el
- * @param {String} pluginName
- * @returns {Promise} deferred async wiring of dorsal
+ * @param {DomNode|DomNode[]} el a given element or Array to wire
+ * @param {String} pluginName plugin name to wire
+ * @return {Promise} deferred async wiring of dorsal
  */
 DorsalCore.prototype.wire = function(el, pluginName) {
     var deferred = new DorsalDeferred(this.ELEMENT_TO_PLUGINS_MAP),
@@ -345,11 +364,11 @@ DorsalCore.prototype.wire = function(el, pluginName) {
 };
 
 /**
- * rewire
- *
- * @param {DOMNode} el
- * @param {stirng} pluginName
- * @returns {Promise} deferred async wiring of dorsal
+ * @function Dorsal.rewire
+ * @description will remove and re initialize a given node/plugin
+ * @param {DomNode} el node to rewire
+ * @param {stirng} pluginName plugin Name
+ * @return {Promise} deferred async wiring of dorsal
  */
 DorsalCore.prototype.rewire = function(el, pluginName) {
     var deferred;
@@ -368,10 +387,10 @@ DorsalCore.prototype.rewire = function(el, pluginName) {
 };
 
 /**
- * get
- *
- * @param {Array} nodes DomNodes given
- * @returns {Array} all object instances stored for given element/s
+ * @function Dorsal.get
+ * @description will return instances wired to a given node/s
+ * @param {DomNode[]} nodes nodes given
+ * @return {Array} all object instances stored for given node/s
  */
 DorsalCore.prototype.get = function(nodes) {
     var instances = [],
@@ -398,10 +417,10 @@ DorsalCore.prototype.get = function(nodes) {
 };
 
 /**
- * _instancesFor
- *
- * @param {DomNode} el DomNodes given
- * @returns {Object} all instances stored for a particular element
+ * @function Dorsal._instancesFor
+ * @param {DomNode} el Node given
+ * @return {Object} all stored instances for a particular node
+ * @private
 */
 
 DorsalCore.prototype._instancesFor = function(el) {
