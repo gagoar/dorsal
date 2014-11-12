@@ -2,10 +2,10 @@
   "name": "dorsal",
   "version": "0.4.0",
   "description": "HTML UI bootstrap and automation using CSS directives",
-  "homepage": "http://github.com/eventbrite/dorsal",
+  "homepage": "http://eventbrite.github.io/dorsal/",
   "repository": {
     "type": "git",
-    "url": "http://github.com/eventbrite/dorsal.git"
+    "url": "https://github.com/eventbrite/dorsal.git"
   },
   "main": "dist/dorsal.js",
   "scripts": {
