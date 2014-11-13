@@ -18,11 +18,12 @@ var DorsalCore = function() {};
 /**
 * @namespace Dorsal
 *
-* @property {string}            Dorsal.VERSION           - current Version
-* @property {DATA_PREFIX}       Dorsal.DATA_PREFIX       - prefix for attributes used by Dorsal
+* @property {string} Dorsal.VERSION - current Version
+* @property {DATA_PREFIX} Dorsal.DATA_PREFIX - prefix for attributes used by Dorsal
 * @property {DATA_DORSAL_WIRED} Dorsal.DATA_DORSAL_WIRED - data attribute used for internal management
-* @property {GUID_KEY}          Dorsal.GUID_KEY          - data attribute added to each element wired
-* @property {CSS_PREFIX}        Dorsal.CSS_PREFIX        - prefix for any wirable pluginName
+* @property {GUID_KEY} Dorsal.GUID_KEY - data attribute added to each element wired
+* @property {CSS_PREFIX} Dorsal.CSS_PREFIX - prefix for any wirable pluginName
+* @property {DEBUG} Dorsal.DEBUG - prefix for any wirable pluginName
 */
 
 DorsalCore.prototype.VERSION = '0.4.0';
@@ -32,6 +33,7 @@ DorsalCore.prototype.DATA_PREFIX = 'd';
 DorsalCore.prototype.DATA_DORSAL_WIRED = 'data-' + DorsalCore.prototype.DATA_IGNORE_PREFIX + '-wired';
 DorsalCore.prototype.GUID_KEY = 'dorsal-guid';
 DorsalCore.prototype.ELEMENT_TO_PLUGINS_MAP = {};
+DorsalCore.prototype.DEBUG = false;
 
 DorsalCore.prototype.registerPlugin = function(pluginName, callback) {
     if (!this.plugins) {
@@ -111,7 +113,10 @@ DorsalCore.prototype._getAttributes = function(el) {
 
 DorsalCore.prototype._runPlugin = function(el, pluginName) {
     // if already initialized, don't reinitialize
+    var log = new DorsalLog(this.DEBUG);
+
     if (el.getAttribute(this.DATA_DORSAL_WIRED) && el.getAttribute(this.DATA_DORSAL_WIRED).indexOf(pluginName) !== -1) {
+        log.log('node already wired: ' + el);
         return false;
     }
 
@@ -130,17 +135,23 @@ DorsalCore.prototype._runPlugin = function(el, pluginName) {
         this.ELEMENT_TO_PLUGINS_MAP[elementGUID] = {};
     }
 
+    log.log('plugin execution start', {guid: elementGUID, pluginName: pluginName});
+
     if (typeof plugin === 'function') {
         this.ELEMENT_TO_PLUGINS_MAP[elementGUID][pluginName] = plugin.call(el, options);
     } else if (typeof plugin === 'object') {
         this.ELEMENT_TO_PLUGINS_MAP[elementGUID][pluginName] = plugin.create.call(el, options);
     }
 
+    log.log('plugin execution end', {guid: elementGUID, pluginName: pluginName});
+
     if (wiredAttribute) {
         el.setAttribute(this.DATA_DORSAL_WIRED, wiredAttribute + ' ' + pluginName);
     } else {
         el.setAttribute(this.DATA_DORSAL_WIRED, pluginName);
     }
+
+    return elementGUID;
 };
 
 /**
@@ -167,6 +178,7 @@ DorsalCore.prototype._wireElementsFrom = function(parentNode, deferred) {
         nodes;
 
     if (!isValidNode) {
+        log.log('invalid Node: '+ prentNode);
         return;
     }
 
@@ -190,6 +202,13 @@ DorsalCore.prototype._wireElementsFrom = function(parentNode, deferred) {
  * @private
  */
 DorsalCore.prototype._wireElements = function(nodes, plugins, deferred) {
+    if (!nodes.length) {
+        var log = new DorsalLog(this.DEBUG);
+
+        log.log('no nodes to wire: ' + nodes);
+        return;
+    }
+
     var nodeIndex = 0,
         node = nodes[nodeIndex++];
 
@@ -206,7 +225,9 @@ DorsalCore.prototype._wireElements = function(nodes, plugins, deferred) {
  * @private
  */
 DorsalCore.prototype._wireElement = function(el, plugins, deferred) {
-    var self = this;
+    var self = this,
+        log = new DorsalLog(this.DEBUG);
+
     window.setTimeout(function() {
         var validElement = el && 'className' in el,
             pluginCSSClass,
@@ -214,6 +235,7 @@ DorsalCore.prototype._wireElement = function(el, plugins, deferred) {
             index = 0;
 
         if (!validElement) {
+            log.log('invalid node to wire: ' + el);
             return;
         }
 
@@ -223,12 +245,14 @@ DorsalCore.prototype._wireElement = function(el, plugins, deferred) {
 
         pluginName = plugins[index++];
 
+
         while(pluginName) {
             pluginCSSClass = self.CSS_PREFIX + pluginName;
 
             if (el.className.indexOf(pluginCSSClass.substr(1)) > -1) {
                 pluginResponse = self._runPlugin(el, pluginName);
                 deferred.notify(pluginName, pluginResponse, self);
+                log.end(pluginResponse);
             }
             pluginName = plugins[index++];
         }
